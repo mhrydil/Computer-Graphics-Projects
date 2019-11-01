@@ -29,9 +29,9 @@
 
 #define BUFFER_OFFSET( offset )   ((GLvoid*) (offset))
 
-int num_vertices = 1440;
-vec4 vertices[1440];
-vec4 colors[1440];
+int num_vertices = 108;
+vec4 vertices[108];
+vec4 colors[108];
 
 GLuint ctm_location;
 mat4 ctm = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}};
@@ -39,71 +39,41 @@ GLfloat x_value = 0;
 int isGoingRight = 1;
 
 
-
+// makes three squares
 void fillEdges(vec4* vert, int numVertices, float t){
-    
-    // printf("Tip of cone is at (0, %.2f, 0).\n", tip);
-    // printf("Base of cone is at (0, 0, 0)\n");
-    // printf("Number of vertices: %d\n", numVertices);
-    // printf("Height of cone: %d\n", abs(tip));
-
-    int numTriangles = numVertices/3; //480 
-    int numTrianglesPerSection = numTriangles/2; //240
-    float sectionSize = 360.0/numTrianglesPerSection; // 1.5
-    // printf("%d ", numTriangles);
-    // printf("%d ", numTrianglesPerSection);
-    // printf("%.4f", sectionSize); 
-    //Creates the edges for the top part of the cone
-    
-    vec4 tip = {0, t, 0, 1};
-    for (int i=0; i<numTrianglesPerSection; i++)
-    {
-        vec4 curr;
-        vec4 next;
-
-        curr.x = cos((M_PI * (i*sectionSize))/180);
-        curr.y = 0;
-        curr.z = sin((M_PI * (i*sectionSize))/180);
-        curr.w = 1;
-
-        next.x = cos((M_PI * ((i+1)*sectionSize))/180);
-        next.y = 0;
-        next.z = sin((M_PI * ((i+1)*sectionSize))/180);
-        next.w = 1;
-
-        vert[i*3] = tip;
-        vert[i*3+1] = next;
-        vert[i*3+2] = curr;
+    vert[0] = (vec4){-.5, -.5, .5, 1};
+    vert[1] = (vec4){.5, -.5, .5, 1};
+    vert[2] = (vec4){.5, .5, .5, 1};
+    vert[3] = (vec4){-.5, -.5, .5, 1};
+    vert[4] = (vec4){.5, .5, .5, 1};
+    vert[5] = (vec4){-.5, .5, .5, 1};
+    for(int i=0; i<6; i++){ //rotate about y 90 degrees (right wall)
+        vert[6+i] = matVec(rotate_y(90), vert[i]);
     }
-    
-
-    //Generates the edges for the base of the cone
-
-    vec4 origin = {0, 0, 0, 1};
-    for(int i=numTrianglesPerSection; i<numTriangles; i++){
-        vec4 curr;
-        vec4 next;
-
-        curr.x = cos((M_PI * i*sectionSize)/180);
-        curr.y = 0;
-        curr.z = sin((M_PI * i*sectionSize)/180);
-        curr.w = 1;
-
-        next.x = cos((M_PI * (i+1)*sectionSize)/180);
-        next.y = 0;
-        next.z = sin((M_PI * (i+1)*sectionSize)/180);
-        next.w = 1;
-
-        vert[i*3] = origin;
-        vert[i*3+1] = curr;
-        vert[i*3+2] = next;
+    for(int i=0; i<6; i++){ //rotate about y 180 degrees (back wall)
+        vert[12+i] = matVec(rotate_y(180), vert[i]);
     }
+    for(int i=0; i<6; i++){ //rotate about y 270 degrees  (left wall)
+        vert[18+i] = matVec(rotate_y(270), vert[i]);
+    }
+    for(int i=0; i<6; i++){ //rotate about x 90 degrees (bottom wall)
+        vert[24+i] = matVec(rotate_x(90), vert[i]);
+    }
+    for(int i=0; i<6; i++){ //rotate about x 270 degrees (top wall)
+        vert[30+i] = matVec(rotate_x(270), vert[i]);
+    }
+
+    for(int i=0; i<108; i++){
+        vert[i] = vert[i%36];
+    }
+
+
 }
 
 
 //fills the triangles with random colors.
 void fillColors(vec4* colors, int size){
-    for (int i=0; i<size/3; i++)
+    for (int i=0; i<size/6; i++)
     {
         float randx = ((double) rand() / (RAND_MAX));
         float randy = ((double) rand() / (RAND_MAX));
@@ -112,9 +82,12 @@ void fillColors(vec4* colors, int size){
         vec4 next = {randx, randy, randz, 1};
         vec4 tip = {randx, randy, randz, 1};
 
-        colors[i*3+1] = curr;
-        colors[i*3] = next;
-        colors[i*3+2] = tip;
+        colors[i*6+1] = curr;
+        colors[i*6] = next;
+        colors[i*6+2] = tip;
+        colors[i*6+4] = curr;
+        colors[i*6+3] = next;
+        colors[i*6+5] = tip;
     }
 }
 
@@ -222,7 +195,7 @@ void idle(void){
 int main(int argc, char **argv)
 {
     
-    int num_vertices = 1440;
+    int num_vertices = 108;
     fillEdges(vertices, num_vertices, 1);
     fillColors(colors, num_vertices);
 
