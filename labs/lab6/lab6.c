@@ -35,9 +35,14 @@ vec4 colors[108];
 
 GLuint ctm_location;
 mat4 ctm = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}};
-GLfloat x_value = 0;
-int isGoingRight = 1;
 
+vec4 twinCube_location = {0.0, 0.5, 0.0, 1.0};
+vec4 leftCube_location = {-0.5, -0.5, 0.0, 1.0};
+vec4 rightCube_location = {0.5, -0.5, 0.0, 1.0};
+GLfloat twinCube_degree = 0.0, leftCube_degree = 0.0, rightCube_degree = 0.0;
+mat4 twinCube_ctm = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}};
+mat4 leftCube_ctm = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}};
+mat4 rightCube_ctm = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}};
 
 // makes three squares
 void fillEdges(vec4* vert, int numVertices, float t){
@@ -47,6 +52,7 @@ void fillEdges(vec4* vert, int numVertices, float t){
     vert[3] = (vec4){-.5, -.5, .5, 1};
     vert[4] = (vec4){.5, .5, .5, 1};
     vert[5] = (vec4){-.5, .5, .5, 1};
+
     for(int i=0; i<6; i++){ //rotate about y 90 degrees (right wall)
         vert[6+i] = matVec(rotate_y(90), vert[i]);
     }
@@ -99,6 +105,15 @@ void init(void)
 
     ctm_location = glGetUniformLocation(program, "ctm");
 
+    for(int i=0; i<36; i++){
+        vertices[i] = matVec(scale(.5, .5, .5), vertices[i]);
+        vertices[i] = matVec(translate(-.5, .5, 0), vertices[i]);
+    }
+    for(int i=36; i<72; i++){
+        vertices[i] = matVec(scale(.5, .5, .5), vertices[i]);
+        vertices[i] = matVec(translate(.5, .5, 0), vertices[i]);
+    }
+
     GLuint vao;
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
@@ -132,10 +147,18 @@ void display(void)
                                                                     // The number of elements (1 matrix in this case)
                                                                     // Transpose (no transpose in this case)
                                                                     // Pointer to the matrix
+    glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat*) &twinCube_ctm);
+    glDrawArrays(GL_TRIANGLES, 0, 72);
+
+    glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat*) &leftCube_ctm);
+    glDrawArrays(GL_TRIANGLES, 72, 36);
+
+    glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat*) &rightCube_ctm);
+    glDrawArrays(GL_TRIANGLES, 72, 36);
 
     glPolygonMode(GL_FRONT, GL_FILL);
     glPolygonMode(GL_BACK, GL_LINE);
-    glDrawArrays(GL_TRIANGLES, 0, num_vertices);
+    // glDrawArrays(GL_TRIANGLES, 0, num_vertices);
 
     glutSwapBuffers();
 }
@@ -167,27 +190,37 @@ void special(int key, int x, int y){
 }
 
 void idle(void){
-    if(isGoingRight)
-    {
-        x_value += 0.05;
-        if(fabs(x_value - 1.0) < 0.000001)
-        {
-            x_value = 1.0;
-            isGoingRight = 0;
-        }
+
+    if(twinCube_degree == 360){
+        twinCube_degree = 0;
     }
-    else
-    {
-        x_value -= 0.05;
-        if(fabs(x_value - (-1.0)) < 0.000001)
-        {
-            x_value = -1.0;
-            isGoingRight = 1;
-        }
+    else{
+        twinCube_degree += 2;
     }
 
-    ctm = translate(x_value, 0.0, 0.0);
-    printMat(ctm);
+    if(leftCube_degree == 360){
+        leftCube_degree = 0;
+    }
+    else{
+        leftCube_degree += 2;
+    }
+
+    if(rightCube_degree == 360){
+        rightCube_degree = 0;
+    }
+    else{
+        rightCube_degree += 2;
+    }
+
+    leftCube_ctm = scale(.5, .5, .5);
+    leftCube_ctm = matMult(rotate_z(leftCube_degree), leftCube_ctm);    
+    leftCube_ctm = matMult(translate(leftCube_location.x, leftCube_location.y, 0), leftCube_ctm);
+
+    rightCube_ctm = scale(.5, .5, .5);
+    rightCube_ctm = matMult(rotate_x(rightCube_degree), rightCube_ctm);
+    rightCube_ctm = matMult(translate(rightCube_location.x, rightCube_location. y, 0), rightCube_ctm);
+
+    twinCube_ctm = rotate_y(twinCube_degree);
 
     glutPostRedisplay();
 }
@@ -199,14 +232,11 @@ int main(int argc, char **argv)
     fillEdges(vertices, num_vertices, 1);
     fillColors(colors, num_vertices);
 
-
-
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
     glutInitWindowSize(512, 512);
     glutInitWindowPosition(200,200);
     glutCreateWindow("Cone");
-    //glewInit();
     init();
     glutDisplayFunc(display);
     glutKeyboardFunc(keyboard);
