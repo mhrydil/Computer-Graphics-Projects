@@ -18,7 +18,7 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include <GL/freeglut_ext.h>
-
+``
 #endif  // __APPLE__
 
 #include "initShader.h"
@@ -207,7 +207,7 @@ void display(void)
     glUniformMatrix4fv(projection_location, 1, GL_FALSE, (GLfloat *) &projection);
 
     glPolygonMode(GL_FRONT, GL_FILL);
-    glPolygonMode(GL_BACK, GL_LINE);
+    glPolygonMode(GL_BACK, GL_FILL);
     glDrawArrays(GL_TRIANGLES, 0, num_vertices);
 
     glutSwapBuffers();
@@ -314,13 +314,13 @@ int main(int argc, char **argv)
     // }
 
     // ctm = translate(0, 0, 5);
-    eye = (vec4){0, 0, 2.5, 0};
-    at = (vec4){1, 0, 2.5, 0};
+    eye = (vec4){22.5, 0, 0, 0};
+    at = (vec4){22.5, 0, 22.5, 0};
     up = (vec4){0, 1, 0, 0};
 
     model_view = look_at(eye, at, up);
     printMat(model_view);
-    // projection = ortho(-50, 50, -50, 50, 50, -50);
+    //projection = ortho(-50, 50, -50, 50, 50, -50);
     projection = frustum(-10, 10, -10, 10, 10, -10);
 
     // printMat(projection);
