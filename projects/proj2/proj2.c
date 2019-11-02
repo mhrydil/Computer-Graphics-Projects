@@ -30,12 +30,20 @@
 
 #define BUFFER_OFFSET( offset )   ((GLvoid*) (offset))
 
-int num_vertices = 2916;
+typedef struct{
+    int nWall;
+    int eWall;
+    int sWall;
+    int wWall;
+} cell;
+
+cell maze[8][8];
+int num_vertices = 5760;
 // vec4 pillars[2916];
 // vec2 tex_pillars[2916];
-vec4 vertices[2916];
-vec4 colors[2916];
-vec2 tex_coords[2916];
+vec4 vertices[5760];
+vec4 colors[5760];
+vec2 tex_coords[5760];
 vec4 eye;
 vec4 at;
 vec4 up;
@@ -52,7 +60,136 @@ mat4 identity = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0
 int windowSize;
 vec4 downClick;
 
-void makeCube(vec4* vert, int numVertices, float t){
+void printMaze(int size);
+void printCell(int x, int y){
+    printf("north: %d\n", maze[x][y].nWall);
+    printf("east: %d\n", maze[x][y].eWall);
+    printf("south: %d\n", maze[x][y].sWall);
+    printf("west: %d\n", maze[x][y].wWall);
+}
+
+int randomNum(int from, int to){ //returns a random number betweeen from and to inclusive
+    if(to == from) return -1;
+    return rand() % (to-from);
+}
+
+void drawWestWalls(int r, int c, int rMin, int rMax){
+    for(int i=rMin; i<rMax; i++){
+        maze[i][c].wWall = 1;
+    }
+}
+
+void drawNorthWalls(int r, int c, int cMin, int cMax){
+    for(int i=cMin; i<cMax; i++){
+        maze[r][i].nWall = 1;
+    }
+}
+
+
+void generateMazeRec(int rMax, int rMin, int cMax, int cMin){
+    int rDiff = rMax - rMin;
+    int cDiff = cMax - cMin;
+    if(rDiff <= 1 || cDiff <= 1) return; //base case the row or column is only one cell wide, so we can't put any walls in it
+    else{
+        // printf("rMax: %d rMin: %d cMax: %d cMin: %d\n", rMax, rMin, cMax, cMin);
+        int rRand = 1+randomNum(rMin+1, rMax); // returns random number from rMin+1 to rMax
+        int cRand = 1+randomNum(cMin+1, cMax); // returns a random number from cMin+1 to cMax
+        int r = rMin + rRand; //this is the cell that we randomly selected to draw walls from
+        int c = cMin + cRand;
+        // printf("row: %d col: %d\n", r, c);
+        drawNorthWalls(r, c, cMin, cMax);
+        drawWestWalls(r, c, rMin, rMax);
+        // printMaze(8);
+
+
+        int randomWall = randomNum(0, 3);
+        
+        //remove 1 wall from each set of walls except the random wall selected
+        if(randomWall != 0){
+            int x = randomNum(rMin, r-1);
+            if(x == -1){
+                maze[rMin][c].wWall = 0;
+            }
+            else maze[(x+rMin)][c].wWall = 0;
+            //printf("removing west wall of cell [%d][%d]\n", x+rMin, c);
+        }
+        if(randomWall != 1){
+            int x = randomNum(cMin, c-1);
+            if(x == -1){
+                maze[r][cMin].nWall = 0;
+            }
+            else maze[r][(x+cMin)].nWall = 0;
+            //printf("removing north wall of cell [%d][%d]\n", r, x+cMin);
+        }
+        if(randomWall != 2){
+            int x = randomNum(0, rMax-r);
+            if(x == -1){
+                maze[r][c].wWall = 0;
+            }
+            else maze[(x+r)][c].wWall = 0;
+            // printf("removing west wall of cell [%d][%d]\n", x+r, c);
+        }
+        if(randomWall != 3){
+            int x = randomNum(0, cMax-c);
+            if(x == -1){
+                maze[r][c].wWall = 0;
+            }
+            else maze[r][(x+c)].nWall = 0;
+            // printf("removing north wall of cell [%d][%d]\n", r, x+c);
+        }
+
+        // printMaze(8);
+        generateMazeRec(r, rMin, c, cMin);
+        generateMazeRec(rMax, r, c, cMin); 
+        generateMazeRec(r, rMin, cMax, c);
+        generateMazeRec(rMax, r, cMax, c);
+    }
+}
+
+void generateMaze(){
+    //generate the outer walls for the maze
+    for(int i=0; i<8; i++){
+        for(int j=0; j<8; j++){
+            if(i == 0) maze[i][j].nWall = 1;
+            if(i==7) maze[i][j].sWall = 1;
+            if((j == 0) && i != j) maze[i][j].wWall = 1;
+            if(j == 7 && j != i) maze[i][j].eWall = 1;
+        }
+    }
+    //generate the inner walls for the maze, recursively
+    generateMazeRec(8, 0, 8, 0);
+
+}
+
+
+
+void printMaze(int size){
+    for(int i=0; i<size; i++){
+        for(int j=0; j<size; j++){
+            if(maze[i][j].nWall) printf("+---");
+            else printf("+   ");
+        }
+        printf("+\n");
+        for(int j=0; j<size; j++){
+            if(maze[i][j].wWall || maze[i][j].eWall){
+                if(maze[i][j].wWall && maze[i][j].eWall) printf("|   |");
+                else if(maze[i][j].wWall) printf("|   ");
+                else printf("    |");
+            }
+            else{
+                printf("    ");
+            }
+        }
+        printf("\n");
+    }
+    for(int j=0; j<8; j++){
+        if(maze[7][j].sWall) printf("+---");
+        else printf("+   ");
+    }
+    printf("+\n");
+}
+
+void makeCubes(vec4* vert, int numVertices, float t){
     vert[0] = (vec4){-.5, -.5, .5, 1};
     vert[1] = (vec4){.5, -.5, .5, 1};
     vert[2] = (vec4){.5, .5, .5, 1};
@@ -74,10 +211,14 @@ void makeCube(vec4* vert, int numVertices, float t){
     for(int i=0; i<6; i++){ //rotate about x 270 degrees (top wall)
         vert[30+i] = matVec(rotate_x(270), vert[i]);
     }
+
+    // scale by 5 on the y-axis to make the pillars
     for(int i=0; i<36; i++){
     	vert[i] = matVec(scale(1, 5, 1), vert[i]);
     }
     int currVert = 0;
+
+    //puts a pillar at each of the locations
     for(int c=0; c<9; c++){
     	for(int r=0; r<9; r++){
     		for(int i=0; i<36; i++){
@@ -85,9 +226,39 @@ void makeCube(vec4* vert, int numVertices, float t){
     		}
     	}
     }
-    
 
+    //scale the pillar to make a wall
+    for(int i=0; i<8; i++){
+        for(int j=0; j<36; j++){
+            vert[currVert] = matVec(scale(5, .8, .8), vert[j]);
+            vert[currVert] = matVec(translate(5*i + 2.5, -.5, -.1), vert[currVert]);
+            currVert++;
+        }
+    }
+    for(int i=0; i<8; i++){
+        for(int j=0; j<36; j++){
+            vert[currVert] = matVec(scale(5, .8, .8), vert[j]);
+            vert[currVert] = matVec(translate(5*i + 2.5, -.5, 40+.1), vert[currVert]);
+            currVert++;
+        }
+    }
+    for(int i=1; i<8; i++){
+        for(int j=0; j<36; j++){
+            vert[currVert] = matVec(scale(5, .8, .8), vert[j]);
+            vert[currVert] = matVec(rotate_y(90), vert[currVert]);
+            vert[currVert] = matVec(translate(0, -.5, 5*i+2.6), vert[currVert]);
+            currVert++;
+        }
+    }
 
+    for(int i=0; i<7; i++){
+        for(int j=0; j<36; j++){
+            vert[currVert] = matVec(scale(5, .8, .8), vert[j]);
+            vert[currVert] = matVec(rotate_y(90), vert[currVert]);
+            vert[currVert] = matVec(translate(40, -.5, 5*i+2.6), vert[currVert]);
+            currVert++;
+        }
+    }
 }
 
 //fills the triangles with random colors.
@@ -121,11 +292,25 @@ void fillTextures(vec2* textures, int size){
     for(int i=0; i<2916; i++){
     	textures[i] = textures[i%36];
     }
+
+    textures[2916] = (vec2){0, .5};
+    textures[2917] = (vec2){.5, .5};
+    textures[2918] = (vec2){.5, 0};
+    textures[2919] = (vec2){0, .5};
+    textures[2920] = (vec2){.5, 0};
+    textures[2921] = (vec2){0, 0};
+    for(int i=2916; i<num_vertices; i++){
+        textures[i] = textures[2916 + i%6];
+    }
+
 }
 
 
 void init(void)
 {
+
+    //glEnable(GL_DEPTH_TEST);
+
     int width = 800;
     int height = 800;
     GLubyte myTexels[width][height][3];
@@ -299,11 +484,24 @@ void special(int key, int x, int y){
 
 int main(int argc, char **argv)
 {
-    windowSize = 512;
-    int num_vertices = 72;
-    makeCube(vertices, num_vertices, 1);
+    srand(time(NULL));
+    windowSize = 800;
+    int num_vertices = 5760;
+    makeCubes(vertices, num_vertices, 1);
     fillColors(colors, num_vertices);
     fillTextures(tex_coords, num_vertices);
+    generateMaze();
+    int countWalls = 0;
+    for(int i=0; i<8; i++){
+        for(int j=0; j<8; j++){
+            if(maze[i][j].nWall) countWalls++;
+            if(maze[i][j].eWall) countWalls++;
+            if(maze[i][j].sWall) countWalls++;
+            if(maze[i][j].wWall) countWalls++;
+        }
+    }
+    printMaze(8);
+    printf("number of walls: %d\n", countWalls);
     // for(int i=0; i<36; i++){
     //     vertices[i] = matVec(translate(1, 0, 0), vertices[i]);
     //     vertices[i] = matVec(scale(5, 5, 1), vertices[i]);
@@ -314,14 +512,14 @@ int main(int argc, char **argv)
     // }
 
     // ctm = translate(0, 0, 5);
-    eye = (vec4){22.5, 0, 0, 0};
-    at = (vec4){22.5, 0, 22.5, 0};
+    eye = (vec4){20, 10, 20, 0};
+    at = (vec4){20, 0, 20, 0};
     up = (vec4){0, 1, 0, 0};
 
     model_view = look_at(eye, at, up);
-    printMat(model_view);
-    //projection = ortho(-50, 50, -50, 50, 50, -50);
-    projection = frustum(-10, 10, -10, 10, 10, -10);
+    // printMat(model_view);
+    projection = ortho(-20, 20, -20, 20, -20, 20);
+    // projection = frustum(-10, 10, -10, 10, 10, -10);
 
     // printMat(projection);
 

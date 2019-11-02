@@ -313,6 +313,11 @@ GLfloat getMagnitude (vec4 vec){
     return sqrt(vec.x*vec.x + vec.y*vec.y + vec.z*vec.z);
 }
 
+mat4 matIdentity(){
+	mat4 ident = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}};
+	return ident;
+}
+
 mat4 rotateAboutVector(vec4 u, GLfloat theta){
     GLfloat uMag;
     GLfloat d;
@@ -389,9 +394,15 @@ mat4 look_at(vec4 eye, vec4 at, vec4 up)
 	GLfloat nMag = getMagnitude(n);
 	n = vecScalar(1/nMag, n);
 
-	u = vecCross(up, n);
-	GLfloat uMag = getMagnitude(u);
-	u = vecScalar(1/uMag, u);
+	if(up.x == n.x && up.y == n.y && up.z == n.z){ //if looking straight down
+		u = (vec4){1, 0, 0, 0};
+	}
+	else{
+		u = vecCross(up, n);
+		GLfloat uMag = getMagnitude(u);
+		u = vecScalar(1/uMag, u);
+	}
+
 
 	v = vecCross(n, u);
 	GLfloat vMag = getMagnitude(v);

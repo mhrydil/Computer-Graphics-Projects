@@ -242,7 +242,7 @@ int main(int argc, char **argv)
     fillEdges(vertices, num_vertices, 1);
     fillColors(colors, num_vertices);
     for(int i=0; i<num_vertices; i++){
-        vertices[i] = matVec(scale(1, 3, 1), vertices[i]);
+        vertices[i] = matVec(scale(1, 1, 1), vertices[i]);
     }
     ctm = translate(0, 0, 0);
 

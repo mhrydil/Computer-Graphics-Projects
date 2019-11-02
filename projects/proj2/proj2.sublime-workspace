@@ -370,7 +370,7 @@
 	],
 	"find":
 	{
-		"height": 44.0
+		"height": 28.0
 	},
 	"find_in_files":
 	{
@@ -384,6 +384,8 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"depth",
+			"clear",
 			"glclear"
 		],
 		"highlight": true,
@@ -409,7 +411,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 32.0
+		"height": 28.0
 	},
 	"input":
 	{
@@ -458,7 +460,7 @@
 	"project": "proj2.sublime-project",
 	"replace":
 	{
-		"height": 60.0
+		"height": 52.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -499,7 +501,7 @@
 	"show_minimap": false,
 	"show_open_files": true,
 	"show_tabs": true,
-	"side_bar_visible": false,
+	"side_bar_visible": true,
 	"side_bar_width": 209.0,
 	"status_bar_visible": true,
 	"template_settings":

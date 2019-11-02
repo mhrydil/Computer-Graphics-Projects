@@ -55,6 +55,7 @@ mat4 rotate_y(GLfloat angle);
 mat4 rotate_z(GLfloat angle);
 
 GLfloat getMagnitude (vec4 vec);
+mat4 matIdentity();
 mat4 rotateAboutVector(vec4 u, GLfloat theta);
 
 mat4 look_at(vec4 eye, vec4 at, vec4 up);
