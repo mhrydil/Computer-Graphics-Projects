@@ -1,10 +1,10 @@
 /*
- * triangle.c
+ * lab6.c
  *
- *  Created on: Aug 28, 2017
- *      Author: Thumrongsak Kosiyatrakul
+ * Matthew Hrydil
+ * November 1, 2019
+ * 
  */
-
 #define GL_SILENCE_DEPRECATION
 
 #ifdef __APPLE__  // include Mac OS X verions of headers
@@ -69,8 +69,8 @@ void fillEdges(vec4* vert, int numVertices, float t){
         vert[30+i] = matVec(rotate_x(270), vert[i]);
     }
 
-    for(int i=0; i<108; i++){
-        vert[i] = vert[i%36];
+    for(int i=0; i<72; i++){
+        vert[36+i] = vert[i%36];
     }
 
 
@@ -79,7 +79,7 @@ void fillEdges(vec4* vert, int numVertices, float t){
 
 //fills the triangles with random colors.
 void fillColors(vec4* colors, int size){
-    for (int i=0; i<size/6; i++)
+    for (int i=0; i<6; i++)
     {
         float randx = ((double) rand() / (RAND_MAX));
         float randy = ((double) rand() / (RAND_MAX));
@@ -94,6 +94,9 @@ void fillColors(vec4* colors, int size){
         colors[i*6+4] = curr;
         colors[i*6+3] = next;
         colors[i*6+5] = tip;
+    }
+    for(int i=0; i<72; i++){
+        colors[36+i] = colors[i%36];
     }
 }
 
@@ -134,7 +137,7 @@ void init(void)
     glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0, (GLvoid *) sizeof(vertices));
 
     glEnable(GL_DEPTH_TEST);
-    glClearColor(0.0, 0.0, 0.0, 1.0);
+    glClearColor(1.0, 1.0, 1.0, 1.0);
     glDepthRange(1,0);
 }
 
@@ -171,24 +174,6 @@ void keyboard(unsigned char key, int mousex, int mousey)
     glutPostRedisplay();
 }
 
-void mouse(int button, int state, int x, int y){
-	printf("Button: %d, State: %d, X: %d, Y: %d\n", button, state, x, y);
-
-}
-
-void motion(int x, int y){
-	printf("Motion: X: %d, Y: %d\n", x, y);
-}
-
-void special(int key, int x, int y){
-	printf("Special: Key: %d, X: %d, Y: %d\n", key, x, y);
-	switch(key){
-		case 101: ctm = matMult(scale(1.05, 1.05, 1.05), ctm); break;
-		case 103: ctm = matMult(scale(1/1.05, 1/1.05, 1/1.05), ctm); break;
-	}
-	glutPostRedisplay();	
-}
-
 void idle(void){
 
     if(twinCube_degree == 360){
@@ -218,7 +203,7 @@ void idle(void){
 
     rightCube_ctm = scale(.5, .5, .5);
     rightCube_ctm = matMult(rotate_x(rightCube_degree), rightCube_ctm);
-    rightCube_ctm = matMult(translate(rightCube_location.x, rightCube_location. y, 0), rightCube_ctm);
+    rightCube_ctm = matMult(translate(rightCube_location.x, rightCube_location.y, 0), rightCube_ctm);
 
     twinCube_ctm = rotate_y(twinCube_degree);
 
@@ -236,13 +221,10 @@ int main(int argc, char **argv)
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
     glutInitWindowSize(512, 512);
     glutInitWindowPosition(200,200);
-    glutCreateWindow("Cone");
+    glutCreateWindow("lab6");
     init();
     glutDisplayFunc(display);
     glutKeyboardFunc(keyboard);
-    glutMouseFunc(mouse);
-    glutMotionFunc(motion);
-    glutSpecialFunc(special);
     glutIdleFunc(idle);
     glutMainLoop();
     
