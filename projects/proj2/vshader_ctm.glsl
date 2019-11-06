@@ -14,6 +14,6 @@ uniform mat4 projection;
 void main()
 {
 	texCoord = vTexCoord;
-	gl_Position = projection * model_view * ctm * vPosition / vPosition.w;
+	gl_Position = projection * model_view * ctm * (vPosition / vPosition.w);
 	color = vColor;
 }

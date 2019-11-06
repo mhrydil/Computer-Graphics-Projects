@@ -239,10 +239,11 @@
 	],
 	"file_history":
 	[
-		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/common/matLib.c",
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj2/proj2.c",
-		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj2/proj2.sublime-project",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/common/matLib.c",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0445_DataStructures_TA/labs/lab8/prep/cs445-lab08-!prep/Lab 10 Instructions.md",
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj2/Makefile",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj2/proj2.sublime-project",
 		"/Users/matthewhrydil/Library/Application Support/Sublime Text 3/Packages/User/sftp_servers/pitt",
 		"/var/folders/r5/tcpy5gh52g9b3jsjvb5_sr9r0000gn/T/sublime-sftp-browse-1572535728/pitt/afs/pitt.edu/home/m/b/mbh38/private/cs0449/projects/proj2/mydriver.c",
 		"/var/folders/r5/tcpy5gh52g9b3jsjvb5_sr9r0000gn/T/sublime-sftp-browse-1572535871/pitt/afs/pitt.edu/home/m/b/mbh38/private/cs0449/projects/proj2/bigdriver.c",
@@ -365,12 +366,11 @@
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/labs/lab2/README.txt",
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0445_DataStructures_TA/cs445-lab02/cs445/lab2/BagInterface.java",
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0445_DataStructures_TA/cs445-lab02/cs445/lab2/LongestCommonSubsequence.java",
-		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0445_DataStructures_TA/cs445-lab02-!staff/cs445/lab2/BagInterface.java",
-		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/labs/lab2/matLib.c"
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0445_DataStructures_TA/cs445-lab02-!staff/cs445/lab2/BagInterface.java"
 	],
 	"find":
 	{
-		"height": 28.0
+		"height": 39.0
 	},
 	"find_in_files":
 	{
@@ -384,6 +384,30 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"vert",
+			"start",
+			"0",
+			"start",
+			"makescene",
+			"wWall",
+			"eWall",
+			"cm",
+			"ymax",
+			"xmax",
+			"ymin",
+			"xmin",
+			"yMin",
+			"yMax",
+			"xMin",
+			"xmax",
+			"printmaze",
+			"test",
+			"randompoint",
+			"rand",
+			"makecube",
+			"downclick",
+			"look",
+			"num_ver",
 			"depth",
 			"clear",
 			"glclear"
@@ -411,7 +435,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 28.0
+		"height": 26.0
 	},
 	"input":
 	{
@@ -460,7 +484,7 @@
 	"project": "proj2.sublime-project",
 	"replace":
 	{
-		"height": 52.0
+		"height": 48.0
 	},
 	"save_all_on_build": true,
 	"select_file":

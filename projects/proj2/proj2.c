@@ -35,9 +35,15 @@ typedef struct{
     int eWall;
     int sWall;
     int wWall;
+    int isUsed;
 } cell;
 
+
+int mazeSize = 8;
 cell maze[8][8];
+int solution[64];
+int solved;
+int sCounter;
 int num_vertices = 5760;
 // vec4 pillars[2916];
 // vec2 tex_pillars[2916];
@@ -47,6 +53,7 @@ vec2 tex_coords[5760];
 vec4 eye;
 vec4 at;
 vec4 up;
+
 
 GLuint ctm_location;
 GLuint model_view_location;
@@ -85,7 +92,6 @@ void drawNorthWalls(int r, int c, int cMin, int cMax){
     }
 }
 
-
 void generateMazeRec(int rMax, int rMin, int cMax, int cMin){
     int rDiff = rMax - rMin;
     int cDiff = cMax - cMin;
@@ -103,7 +109,7 @@ void generateMazeRec(int rMax, int rMin, int cMax, int cMin){
 
 
         int randomWall = randomNum(0, 3);
-        
+
         //remove 1 wall from each set of walls except the random wall selected
         if(randomWall != 0){
             int x = randomNum(rMin, r-1);
@@ -146,21 +152,102 @@ void generateMazeRec(int rMax, int rMin, int cMax, int cMin){
     }
 }
 
-void generateMaze(){
+void generateMaze(size){
     //generate the outer walls for the maze
-    for(int i=0; i<8; i++){
-        for(int j=0; j<8; j++){
+    for(int i=0; i<size; i++){
+        for(int j=0; j<size; j++){
             if(i == 0) maze[i][j].nWall = 1;
-            if(i==7) maze[i][j].sWall = 1;
+            if(i==size-1) maze[i][j].sWall = 1;
             if((j == 0) && i != j) maze[i][j].wWall = 1;
-            if(j == 7 && j != i) maze[i][j].eWall = 1;
+            if(j == size-1 && j != i) maze[i][j].eWall = 1;
         }
     }
     //generate the inner walls for the maze, recursively
-    generateMazeRec(8, 0, 8, 0);
+    generateMazeRec(size, 0, size, 0);
 
 }
 
+int canGoEast(int row, int col){
+    if(col == 7) return 0;
+    if(maze[row][col].eWall) return 0;
+    if(maze[row][col+1].wWall) return 0;
+    if(maze[row][col+1].isUsed) return 0;
+    return 1;
+}
+
+int canGoWest(int row, int col){
+    if(col == 0) return 0;
+    if(maze[row][col].wWall) return 0;
+    if(maze[row][col-1].eWall) return 0;
+    if(maze[row][col-1].isUsed) return 0;
+    return 1;
+}
+
+int canGoNorth(int row, int col){
+    if(row == 0) return 0;
+    if(maze[row][col].nWall) return 0;
+    if(maze[row-1][col].sWall) return 0;
+    if(maze[row-1][col].isUsed) return 0;
+    return 1;
+}
+
+int canGoSouth(int row, int col){
+    if(row == 7) return 0;
+    if(maze[row][col].sWall) return 0;
+    if(maze[row+1][col].nWall) return 0;
+    if(maze[row+1][col].isUsed) return 0;
+    return 1;
+}
+
+void solveMaze(int row, int col){
+    if(row == 7 && col == 7){
+        solved = 1; //base case
+    }
+
+
+    if(!solved && canGoEast(row, col)){
+        solution[sCounter++] = 1;
+        maze[row][col].isUsed = 1;
+        solveMaze(row, col+1);
+        if(!solved){
+            solution[--sCounter] = 0;
+        }
+    }
+
+    if(!solved && canGoSouth(row, col)){
+        solution[sCounter++] = 2;
+        maze[row][col].isUsed = 1;
+        solveMaze(row+1, col);
+        if(!solved){
+            solution[--sCounter] = 0;
+        }
+    }
+
+    if(!solved && canGoWest(row, col)){
+        solution[sCounter++] = 3;
+        maze[row][col].isUsed = 1;
+        solveMaze(row, col-1);
+        if(!solved){
+            solution[--sCounter] = 0;
+        }
+    }
+
+    if(!solved && canGoNorth(row, col)){
+        solution[sCounter++] = 4;
+        maze[row][col].isUsed = 1;
+        solveMaze(row-1, col);
+        if(!solved){
+            solution[--sCounter] = 0;
+        }
+    }
+}
+
+void printSolution(){
+    int count = 0;
+    while(solution[count] != 0){
+        printf("%d ", solution[count++]);
+    }
+}
 
 
 void printMaze(int size){
@@ -182,14 +269,71 @@ void printMaze(int size){
         }
         printf("\n");
     }
-    for(int j=0; j<8; j++){
-        if(maze[7][j].sWall) printf("+---");
+    for(int j=0; j<size; j++){
+        if(maze[size-1][j].sWall) printf("+---");
         else printf("+   ");
     }
     printf("+\n");
 }
 
-void makeCubes(vec4* vert, int numVertices, float t){
+void buildSquare(vec4* start){
+    start[0] = (vec4){-.5, -.5, .5, 1};
+    start[1] = (vec4){.5, -.5, .5, 1};
+    start[2] = (vec4){.5, .5, .5, 1};
+    start[3] = (vec4){-.5, -.5, .5, 1};
+    start[4] = (vec4){.5, .5, .5, 1};
+    start[5] = (vec4){-.5, .5, .5, 1};
+    for(int i=0; i<6; i++){ //rotate about y 90 degrees (right wall)
+        start[6+i] = matVec(rotate_y(90), start[i]);
+    }
+    for(int i=0; i<6; i++){ //rotate about y 180 degrees (back wall)
+        start[12+i] = matVec(rotate_y(180), start[i]);
+    }
+    for(int i=0; i<6; i++){ //rotate about y 270 degrees  (left wall)
+        start[18+i] = matVec(rotate_y(270), start[i]);
+    }
+    for(int i=0; i<6; i++){ //rotate about x 90 degrees (bottom wall)
+        start[24+i] = matVec(rotate_x(90), start[i]);
+    }
+    for(int i=0; i<6; i++){ //rotate about x 270 degrees (top wall)
+        start[30+i] = matVec(rotate_x(270), start[i]);
+    }
+}
+
+void buildNorthWall(vec4* start){
+    buildSquare(start);
+    for(int i=0; i<36; i++){
+        start[i] = matVec(scale(5, 4, .5), start[i]);
+        start[i] = matVec(translate(2.5, -.5, 0), start[i]);
+        start[i] = matVec(rotate_y(90), start[i]);
+    }
+}
+void buildEastWall(vec4* start){
+    buildSquare(start);
+    for(int i=0; i<36; i++){
+        start[i] = matVec(scale(5, 4, .5), start[i]);
+        start[i] = matVec(translate(2.5, -.5, -5), start[i]);
+    }
+}
+void buildSouthWall(vec4* start){
+    buildSquare(start);
+    for(int i=0; i<36; i++){
+        start[i] = matVec(scale(5, 4, .5), start[i]);
+        start[i] = matVec(translate(2.5, -.5, 5), start[i]);
+        start[i] = matVec(rotate_y(90), start[i]);
+    }
+}
+void buildWestWall(vec4* start){
+    buildSquare(start);
+    for(int i=0; i<36; i++){
+        start[i] = matVec(scale(5, 4, .5), start[i]);
+        start[i] = matVec(translate(2.5, -.5, 0), start[i]);
+        // start[i] = matVec(rotate_y(90), start[i]);
+    }
+}
+
+
+void makeScene(vec4* vert, int numVertices, float t){
     vert[0] = (vec4){-.5, -.5, .5, 1};
     vert[1] = (vec4){.5, -.5, .5, 1};
     vert[2] = (vec4){.5, .5, .5, 1};
@@ -216,47 +360,41 @@ void makeCubes(vec4* vert, int numVertices, float t){
     for(int i=0; i<36; i++){
     	vert[i] = matVec(scale(1, 5, 1), vert[i]);
     }
-    int currVert = 0;
 
+    int currVert = 0;
     //puts a pillar at each of the locations
     for(int c=0; c<9; c++){
     	for(int r=0; r<9; r++){
     		for(int i=0; i<36; i++){
-    			vert[currVert++] = matVec(translate(5*c, 0, 5*r), vert[i]);
+    			vert[currVert++] = matVec(translate(5*c, 0, -5*r), vert[i]);
     		}
     	}
     }
 
-    //scale the pillar to make a wall
-    for(int i=0; i<8; i++){
-        for(int j=0; j<36; j++){
-            vert[currVert] = matVec(scale(5, .8, .8), vert[j]);
-            vert[currVert] = matVec(translate(5*i + 2.5, -.5, -.1), vert[currVert]);
-            currVert++;
-        }
-    }
-    for(int i=0; i<8; i++){
-        for(int j=0; j<36; j++){
-            vert[currVert] = matVec(scale(5, .8, .8), vert[j]);
-            vert[currVert] = matVec(translate(5*i + 2.5, -.5, 40+.1), vert[currVert]);
-            currVert++;
-        }
-    }
-    for(int i=1; i<8; i++){
-        for(int j=0; j<36; j++){
-            vert[currVert] = matVec(scale(5, .8, .8), vert[j]);
-            vert[currVert] = matVec(rotate_y(90), vert[currVert]);
-            vert[currVert] = matVec(translate(0, -.5, 5*i+2.6), vert[currVert]);
-            currVert++;
-        }
-    }
-
-    for(int i=0; i<7; i++){
-        for(int j=0; j<36; j++){
-            vert[currVert] = matVec(scale(5, .8, .8), vert[j]);
-            vert[currVert] = matVec(rotate_y(90), vert[currVert]);
-            vert[currVert] = matVec(translate(40, -.5, 5*i+2.6), vert[currVert]);
-            currVert++;
+    //build the walls based on the maze
+    for(int i=0; i<mazeSize; i++){
+        for(int j=0; j<mazeSize; j++){
+            int startVertex = currVert;
+            if(maze[i][j].nWall){
+               buildNorthWall(&vert[currVert]);
+               currVert += 36;
+            }
+            if(maze[i][j].eWall){
+               buildEastWall(&vert[currVert]);
+               currVert += 36;
+            }
+            if(maze[i][j].sWall){
+                buildSouthWall(&vert[currVert]);
+                currVert += 36;
+            }
+            if(maze[i][j].wWall){
+                buildWestWall(&vert[currVert]);
+                currVert += 36;
+            }
+            int changedVertices = currVert-startVertex;
+            for(int k=0; k<changedVertices; k++){
+                vert[k+startVertex] = matVec(translate(5*i, 0, -5*j), vert[k+startVertex]);
+            }
         }
     }
 }
@@ -453,7 +591,7 @@ void motion(int x, int y){
 }
 
 void special(int key, int x, int y){
-	printf("Special: Key: %d, X: %d, Y: %d\n", key, x, y);
+	// printf("Special: Key: %d, X: %d, Y: %d\n", key, x, y);
 	switch(key){
 		case 101: {
             eye.z -= .1; 
@@ -462,7 +600,7 @@ void special(int key, int x, int y){
         }
 		case 102: {
             eye.x += .1; 
-            at.x += .1;
+            at.z -= .1;
             break;
         }
 		case 103: {
@@ -472,7 +610,7 @@ void special(int key, int x, int y){
         }
 		case 100: {
             eye.x -= .1; 
-            at.x -= .1;
+            at.z += .1;
             break;
         }
 	}
@@ -487,21 +625,24 @@ int main(int argc, char **argv)
     srand(time(NULL));
     windowSize = 800;
     int num_vertices = 5760;
-    makeCubes(vertices, num_vertices, 1);
+    int mazeSize = 8;
+    generateMaze(mazeSize);
+    makeScene(vertices, num_vertices, 1);
     fillColors(colors, num_vertices);
     fillTextures(tex_coords, num_vertices);
-    generateMaze();
     int countWalls = 0;
-    for(int i=0; i<8; i++){
-        for(int j=0; j<8; j++){
+    for(int i=0; i<mazeSize; i++){
+        for(int j=0; j<mazeSize; j++){
             if(maze[i][j].nWall) countWalls++;
             if(maze[i][j].eWall) countWalls++;
             if(maze[i][j].sWall) countWalls++;
             if(maze[i][j].wWall) countWalls++;
         }
     }
-    printMaze(8);
+    printMaze(mazeSize);
     printf("number of walls: %d\n", countWalls);
+    solveMaze(0,0);
+    printSolution();
     // for(int i=0; i<36; i++){
     //     vertices[i] = matVec(translate(1, 0, 0), vertices[i]);
     //     vertices[i] = matVec(scale(5, 5, 1), vertices[i]);
@@ -511,17 +652,41 @@ int main(int argc, char **argv)
     // 	vertices[i] = matVec(scale(5, 5, 1), vertices[i]);
     // }
 
-    // ctm = translate(0, 0, 5);
-    eye = (vec4){20, 10, 20, 0};
-    at = (vec4){20, 0, 20, 0};
+
+
+    //This is the view from directly above
+    // ctm = rotate_y(270);
+    // ctm = matMult(translate(-20, 0, -20), ctm);
+    eye = (vec4){2.5, 0, 2.5, 0};
+    at = (vec4){2.5, 0, -2.5, 0};
     up = (vec4){0, 1, 0, 0};
-
     model_view = look_at(eye, at, up);
-    // printMat(model_view);
-    projection = ortho(-20, 20, -20, 20, -20, 20);
-    // projection = frustum(-10, 10, -10, 10, 10, -10);
+    //projection = ortho(-25, 25, -25, 25, 25, -25);
+    projection = frustum(-2.5, 2.5, -2.5, 2.5, -1, -45);
 
-    // printMat(projection);
+
+
+    // Use this for experimenting!
+    // ctm = rotate_y(270);
+    // ctm = matMult(translate(-20, 0, -20), ctm);
+    // eye = (vec4){0, 0, 0, 0};
+    // at = (vec4){1, 0, 0, 0};
+    // up = (vec4){0, 1, 0, 0};
+    // model_view = look_at(eye, at, up);
+    // // printMat(model_view);
+    // // projection = ortho(-25, 25, 15, 65, 0, -50);
+    // //projection = frustum(-10, 10, -10, 10, 10, -10); //flips everything
+    // projection = frustum(-1, 1, -1, 1, -5, 10);
+
+
+
+
+    
+    // printMat(model_view);
+    
+    // projection = frustum(-50, 50, -50, 50, 50, -50);
+
+    printMat(projection);
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);

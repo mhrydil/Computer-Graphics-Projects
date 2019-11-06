@@ -394,14 +394,14 @@ mat4 look_at(vec4 eye, vec4 at, vec4 up)
 	GLfloat nMag = getMagnitude(n);
 	n = vecScalar(1/nMag, n);
 
-	if(up.x == n.x && up.y == n.y && up.z == n.z){ //if looking straight down
-		u = (vec4){1, 0, 0, 0};
-	}
-	else{
+	//if(up.x == n.x && up.y == n.y && up.z == n.z){ //if looking straight down
+	//	u = (vec4){1, 0, 0, 0};
+	//}
+	//else{
 		u = vecCross(up, n);
 		GLfloat uMag = getMagnitude(u);
 		u = vecScalar(1/uMag, u);
-	}
+	//}
 
 
 	v = vecCross(n, u);
@@ -443,7 +443,7 @@ mat4 frustum(GLfloat left, GLfloat right, GLfloat bottom,
 	result.x.x = (-2*near)/(right-left);	result.y.x = 0;							result.z.x = (left+right)/(right-left);		result.w.x = 0;
 	result.x.y = 0;							result.y.y = (-2*near)/(top-bottom);	result.z.y = (bottom+top)/(top-bottom);		result.w.y = 0;
 	result.x.z = 0;							result.y.z = 0;							result.z.z = (near+far)/(far-near);			result.w.z = -(2*near*far)/(far-near);
-	result.x.w = 0;							result.y.w = 0;							result.z.w = -1;							result.w.z = 0;
+	result.x.w = 0;							result.y.w = 0;							result.z.w = -1;							result.w.w = 0;
 
 	return result;
 }
