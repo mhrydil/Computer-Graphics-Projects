@@ -47,29 +47,42 @@ typedef enum
     TURN_LEFT,
     TURN_RIGHT,
     SOLVING_MAZE,
+    FINISH_MAZE,
 } state;
 
+typedef enum
+{
+    EAST,
+    SOUTH,
+    WEST,
+    NORTH,
+} direction;
+
 state currentState = STILL;
+int currIndex = 0;
 int currentStep = 0;
 int maxSteps = 0;
+int gameMode;
 vec4 origEye;
 vec4 origAt;
 vec4 newEye;
 vec4 newAt;
 vec4 changeEye;
 vec4 changeAt;
+direction directionFacing = EAST;
 
 int mazeSize = 8;
 cell maze[8][8];
 int solution[64];
 int solved;
+int animationDone;
 int sCounter;
-int num_vertices = 5760;
+int num_vertices = 5796;
 // vec4 pillars[2916];
 // vec2 tex_pillars[2916];
-vec4 vertices[5760];
-vec4 colors[5760];
-vec2 tex_coords[5760];
+vec4 vertices[5796];
+vec4 colors[5796];
+vec2 tex_coords[5796];
 vec4 eye;
 vec4 at;
 vec4 up;
@@ -194,7 +207,6 @@ int canGoEast(int row, int col){
     if(maze[row][col+1].isUsed) return 0;
     return 1;
 }
-
 int canGoWest(int row, int col){
     if(col == 0) return 0;
     if(maze[row][col].wWall) return 0;
@@ -202,7 +214,6 @@ int canGoWest(int row, int col){
     if(maze[row][col-1].isUsed) return 0;
     return 1;
 }
-
 int canGoNorth(int row, int col){
     if(row == 0) return 0;
     if(maze[row][col].nWall) return 0;
@@ -210,7 +221,6 @@ int canGoNorth(int row, int col){
     if(maze[row-1][col].isUsed) return 0;
     return 1;
 }
-
 int canGoSouth(int row, int col){
     if(row == 7) return 0;
     if(maze[row][col].sWall) return 0;
@@ -218,7 +228,6 @@ int canGoSouth(int row, int col){
     if(maze[row+1][col].isUsed) return 0;
     return 1;
 }
-
 void solveMaze(int row, int col){
     if(row == 7 && col == 7){
         solved = 1; //base case
@@ -417,6 +426,13 @@ void makeScene(vec4* vert, int numVertices, float t){
             }
         }
     }
+
+    for(int i = 5760; i<num_vertices; i++){
+        vertices[i] = matVec(scale(100, .2, 100), vertices[i%36]);
+        vertices[i] = matVec(translate(25, -2.5, -25), vertices[i]);
+    }
+
+
 }
 
 //fills the triangles with random colors.
@@ -438,19 +454,18 @@ void fillColors(vec4* colors, int size){
 }
 
 void fillTextures(vec2* textures, int size){
+    // Applies stone texture to pillars
     textures[0] = (vec2){.5, .5};
     textures[1] = (vec2){1, .5};
     textures[2] = (vec2){1, 0.0};
     textures[3] = (vec2){.5, 0.5};
     textures[4] = (vec2){1, 0};
     textures[5] = (vec2){0.5, 0.0};
-    for(int i=0; i<30; i++){
-        textures[6+i] = textures[i%6];
-    }
     for(int i=0; i<2916; i++){
-    	textures[i] = textures[i%36];
+    	textures[i] = textures[i%6];
     }
 
+    // Applies brick texture to walls
     textures[2916] = (vec2){0, .5};
     textures[2917] = (vec2){.5, .5};
     textures[2918] = (vec2){.5, 0};
@@ -461,6 +476,33 @@ void fillTextures(vec2* textures, int size){
         textures[i] = textures[2916 + i%6];
     }
 
+    // Applies grass texture to floor
+    textures[5760] = (vec2){0, 1};
+    textures[5761] = (vec2){.5, 1};
+    textures[5762] = (vec2){.5, 0.5};
+    textures[5763] = (vec2){0, 1};
+    textures[5764] = (vec2){.5, .5};
+    textures[5765] = (vec2){0, 0.5};
+    for(int i = 5760; i<num_vertices; i++){
+        textures[i] = textures[5760 + i%6];
+    }
+
+}
+
+vec4 getXYZ (int x, int y){ //Only really used for rotation using mouse, not essential to this assignment, but can be helpful when viewing the maze from above
+    vec4 result;
+    GLfloat xunit = (float)x / (float)windowSize; 
+    GLfloat yunit = (float)y / (float)windowSize; 
+    xunit = ((xunit - .5)) * 2; 
+    yunit = ((yunit - .5)) * 2; 
+    GLfloat zSquared = 1 - (xunit*xunit) - (yunit*yunit);
+
+    result.x = xunit;
+    result.y = -yunit;
+    result.z = sqrt(zSquared);
+    result.w = 1;
+
+    return result;
 }
 
 
@@ -532,7 +574,7 @@ void init(void)
 
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
-    glClearColor(0.0, 0.0, 0.0, 1.0);
+    glClearColor(.529, .808, .922, 1);
     glDepthRange(1,0);
 }
 
@@ -560,30 +602,23 @@ void keyboard(unsigned char key, int mousex, int mousey)
 {
     if(key == 'q')
     	exit(0);
-    if(key == 'm')
+    if(key == 'p'){
+        gameMode = 1;
         currentState = FLYING_AROUND;
+    }
+    if(key == 'a'){
+        gameMode = 0;
+        currentState = FLYING_AROUND;
+    }
     if(key == 'd')
         currentState = FLYING_DOWN;
+    if(key == 'r')
+        currentState = TURN_RIGHT;
+    if(key == 'f')
+        currentState = WALK_FORWARD;
 
     glutPostRedisplay();
 }
-
-vec4 getXYZ (int x, int y){
-    vec4 result;
-    GLfloat xunit = (float)x / (float)windowSize; 
-    GLfloat yunit = (float)y / (float)windowSize; 
-    xunit = ((xunit - .5)) * 2; 
-    yunit = ((yunit - .5)) * 2; 
-    GLfloat zSquared = 1 - (xunit*xunit) - (yunit*yunit);
-
-    result.x = xunit;
-    result.y = -yunit;
-    result.z = sqrt(zSquared);
-    result.w = 1;
-
-    return result;
-}
-
 
 void mouse(int button, int state, int x, int y){
     if(button == 0){
@@ -615,26 +650,23 @@ void motion(int x, int y){
 }
 
 void special(int key, int x, int y){
-	// printf("Special: Key: %d, X: %d, Y: %d\n", key, x, y);
+	printf("Special: Key: %d, X: %d, Y: %d\n", key, x, y);
 	switch(key){
 		case 101: {
-            eye.z -= .1; 
-            at.z -= .1;
+            currentState = WALK_FORWARD;
             break;
         }
 		case 102: {
-            eye.x += .1; 
-            at.z -= .1;
+            currentState = TURN_RIGHT;
             break;
         }
-		case 103: {
-            eye.z += .1; 
-            at.z += .1;
-            break;
-        }
+		// case 103: {
+  //           eye.z += .1; 
+  //           at.z += .1;
+  //           break;
+  //       }
 		case 100: {
-            eye.x -= .1; 
-            at.z += .1;
+            currentState = TURN_LEFT;
             break;
         }
 	}
@@ -648,7 +680,7 @@ void idle(void){
     if(currentState == FLYING_AROUND){
         eye = matVec(rotate_y(2), eye);
         currentStep++;
-        if(currentStep == maxSteps){
+        if(currentStep == maxSteps+1){
             currentState = FLYING_DOWN;
             maxSteps = 50;
             currentStep = 0;
@@ -667,11 +699,167 @@ void idle(void){
         at = vecAdd(vecScalar(alpha, changeAt), origAt);
         currentStep++;
 
-        if(currentStep == maxSteps){
-            currentState = SOLVING_MAZE;
+        if(currentStep == maxSteps+1){
+            currentState = WALK_FORWARD; // enter the maze
             currentStep = 0;
+            maxSteps = 25;
+            origEye = eye;
+            origAt = at;
+        }
+    }
+
+    if(currentState == WALK_FORWARD){
+        switch(directionFacing){
+            case EAST: 
+                newEye = vecAdd((vec4){0, 0, -5, 0}, origEye);
+                newAt = vecAdd((vec4){0, 0, -5, 0}, origAt);
+                break;
+            case SOUTH:
+                newEye = vecAdd((vec4){5, 0, 0, 0}, origEye);
+                newAt = vecAdd((vec4){5, 0, 0, 0}, origAt);
+                break;
+            case WEST:
+                newEye = vecAdd((vec4){0, 0, 5, 0}, origEye);
+                newAt = vecAdd((vec4){0, 0, 5, 0}, origAt);
+                break;
+            case NORTH:
+                newEye = vecAdd((vec4){-5, 0, 0, 0}, origEye);
+                newAt = vecAdd((vec4){-5, 0, 0, 0}, origAt);
+                break;
+            }
+            
+        GLfloat alpha = (float) currentStep/maxSteps;
+        changeEye = vecSub(newEye, origEye);
+        changeAt = vecSub(newAt, origAt);
+        eye = vecAdd(vecScalar(alpha, changeEye), origEye);
+        at = vecAdd(vecScalar(alpha, changeAt), origAt);
+        currentStep++;
+
+        if(currentStep == maxSteps+1){
+            if(gameMode) currentState = STILL;
+            else if(!animationDone) currentState = SOLVING_MAZE;
+            else currentState = STILL;
+            currentStep = 0;
+            maxSteps = 25;
+            origEye = eye;
+            origAt = at;
+        }
+    }
+
+    if(currentState == TURN_RIGHT){
+        switch(directionFacing){
+            case EAST:
+                newAt = vecAdd((vec4){5, 0, 5, 0}, origAt);
+                break;
+            case SOUTH:
+                newAt = vecAdd((vec4){-5, 0, 5, 0}, origAt);
+                break;
+            case WEST:
+                newAt = vecAdd((vec4){-5, 0, -5, 0}, origAt);
+                break;
+            case NORTH:
+                newAt = vecAdd((vec4){5, 0, -5, 0}, origAt);
+                break;
         }
 
+        GLfloat alpha = (float) currentStep/maxSteps;
+        changeAt = vecSub(newAt, origAt);
+        at = vecAdd(vecScalar(alpha, changeAt), origAt);
+        currentStep++;
+
+        if(currentStep == maxSteps+1){
+            switch(directionFacing){
+                case EAST:
+                    directionFacing = SOUTH;
+                    break;
+                case SOUTH:
+                    directionFacing = WEST;
+                    break;
+                case WEST:
+                    directionFacing = NORTH;
+                    break;
+                case NORTH:
+                    directionFacing = EAST;
+                    break;
+            }
+            if(gameMode) currentState = STILL;
+            else currentState = SOLVING_MAZE;
+            currentStep = 0;
+            maxSteps = 25;
+            origAt = at;
+        }
+    }
+
+    if(currentState == TURN_LEFT){
+        switch(directionFacing){
+            case EAST:
+                newAt = vecAdd((vec4){-5, 0, 5, 0}, origAt);
+                break;
+            case SOUTH:
+                newAt = vecAdd((vec4){-5, 0, -5, 0}, origAt);
+                break;
+            case WEST:
+                newAt = vecAdd((vec4){5, 0, -5, 0}, origAt);
+                break;
+            case NORTH:
+                newAt = vecAdd((vec4){5, 0, 5, 0}, origAt);
+                break;
+        }
+
+        GLfloat alpha = (float) currentStep/maxSteps;
+        changeAt = vecSub(newAt, origAt);
+        at = vecAdd(vecScalar(alpha, changeAt), origAt);
+        currentStep++;
+
+        if(currentStep == maxSteps+1){
+            switch(directionFacing){
+                case EAST:
+                    directionFacing = NORTH;
+                    break;
+                case SOUTH:
+                    directionFacing = EAST;
+                    break;
+                case WEST:
+                    directionFacing = SOUTH;
+                    break;
+                case NORTH:
+                    directionFacing = WEST;
+                    break;
+            }
+            if(gameMode) currentState = STILL;
+            else currentState = SOLVING_MAZE;
+            currentStep = 0;
+            maxSteps = 25;
+            origAt = at;
+        }
+    }
+
+    if(currentState == SOLVING_MAZE){
+        if(solution[currIndex] == 0){
+            animationDone = 1;
+            if(directionFacing == EAST) currentState = WALK_FORWARD;
+            if(directionFacing == SOUTH) currentState = TURN_LEFT;
+        }
+        else if(directionFacing == solution[currIndex]-1){
+            currentState = WALK_FORWARD;
+            currIndex++;
+        }
+        else{
+            switch(solution[currIndex]-1){
+                case EAST:
+                    if(directionFacing == NORTH) currentState = TURN_RIGHT;
+                    if(directionFacing == SOUTH) currentState = TURN_LEFT; break;
+                case SOUTH:
+                    if(directionFacing == EAST) currentState = TURN_RIGHT;
+                    if(directionFacing == WEST) currentState = TURN_LEFT; break;
+                case WEST:
+                    if(directionFacing == SOUTH) currentState = TURN_RIGHT;
+                    if(directionFacing == NORTH) currentState = TURN_LEFT; break;
+                case NORTH:
+                    if(directionFacing == WEST) currentState = TURN_RIGHT;
+                    if(directionFacing == EAST) currentState = TURN_LEFT; break;
+            }
+        }
     }
 
     model_view = look_at(eye, at, up);
@@ -683,7 +871,7 @@ int main(int argc, char **argv)
 {
     srand(time(NULL));
     windowSize = 800;
-    int num_vertices = 5760;
+    int num_vertices = 5796;
     int mazeSize = 8;
     generateMaze(mazeSize);
     makeScene(vertices, num_vertices, 1);
@@ -711,11 +899,10 @@ int main(int argc, char **argv)
     up = (vec4){0, 1, 0, 0};
     model_view = look_at(eye, at, up);
     //projection = ortho(-25, 25, -25, 25, 25, -25);
-    projection = frustum(-1, 1, -1, 1, -1, -80);
-    printMat(projection);
+    projection = frustum(-1, 1, -1, 1, -1, -150);
+    // printMat(projection);
 
     maxSteps = 180;
-    //currentState = FLYING_AROUND;
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
@@ -727,8 +914,8 @@ int main(int argc, char **argv)
     glutIdleFunc(idle);
     glutDisplayFunc(display);
     glutKeyboardFunc(keyboard);
-    glutMouseFunc(mouse);
-    glutMotionFunc(motion);
+    // glutMouseFunc(mouse);
+    // glutMotionFunc(motion);
     glutSpecialFunc(special);
     glutMainLoop();
     
