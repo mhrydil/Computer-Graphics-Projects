@@ -38,6 +38,26 @@ typedef struct{
     int isUsed;
 } cell;
 
+typedef enum
+{
+    STILL,
+    FLYING_AROUND,
+    FLYING_DOWN,
+    WALK_FORWARD,
+    TURN_LEFT,
+    TURN_RIGHT,
+    SOLVING_MAZE,
+} state;
+
+state currentState = STILL;
+int currentStep = 0;
+int maxSteps = 0;
+vec4 origEye;
+vec4 origAt;
+vec4 newEye;
+vec4 newAt;
+vec4 changeEye;
+vec4 changeAt;
 
 int mazeSize = 8;
 cell maze[8][8];
@@ -540,6 +560,10 @@ void keyboard(unsigned char key, int mousex, int mousey)
 {
     if(key == 'q')
     	exit(0);
+    if(key == 'm')
+        currentState = FLYING_AROUND;
+    if(key == 'd')
+        currentState = FLYING_DOWN;
 
     glutPostRedisplay();
 }
@@ -620,6 +644,41 @@ void special(int key, int x, int y){
 }
 
 
+void idle(void){
+    if(currentState == FLYING_AROUND){
+        eye = matVec(rotate_y(2), eye);
+        currentStep++;
+        if(currentStep == maxSteps){
+            currentState = FLYING_DOWN;
+            maxSteps = 50;
+            currentStep = 0;
+            origEye = eye;
+            origAt = at;
+        }
+    }
+
+    if(currentState == FLYING_DOWN){
+        newEye = (vec4){-17.5, 0, 22.5, 0};
+        newAt = (vec4){-17.5, 0, 17.5, 0};
+        GLfloat alpha = (float) currentStep/maxSteps;
+        changeEye = vecSub(newEye, origEye);
+        changeAt = vecSub(newAt, origAt);
+        eye = vecAdd(vecScalar(alpha, changeEye), origEye);
+        at = vecAdd(vecScalar(alpha, changeAt), origAt);
+        currentStep++;
+
+        if(currentStep == maxSteps){
+            currentState = SOLVING_MAZE;
+            currentStep = 0;
+        }
+
+    }
+
+    model_view = look_at(eye, at, up);
+    glutPostRedisplay();
+}
+
+
 int main(int argc, char **argv)
 {
     srand(time(NULL));
@@ -643,50 +702,20 @@ int main(int argc, char **argv)
     printf("number of walls: %d\n", countWalls);
     solveMaze(0,0);
     printSolution();
-    // for(int i=0; i<36; i++){
-    //     vertices[i] = matVec(translate(1, 0, 0), vertices[i]);
-    //     vertices[i] = matVec(scale(5, 5, 1), vertices[i]);
-    // }
-    // for(int i=36; i<num_vertices; i++){
-    // 	vertices[i] = matVec(translate(-1, 0, 0), vertices[i]);
-    // 	vertices[i] = matVec(scale(5, 5, 1), vertices[i]);
-    // }
+    for(int i=0; i<num_vertices; i++){
+        vertices[i] = matVec(translate(-20, 0, 20), vertices[i]);
+    }
 
-
-
-    //This is the view from directly above
-    // ctm = rotate_y(270);
-    // ctm = matMult(translate(-20, 0, -20), ctm);
-    eye = (vec4){2.5, 0, 2.5, 0};
-    at = (vec4){2.5, 0, -2.5, 0};
+    eye = (vec4){-30, 30, 30, 0};
+    at = (vec4){0, 0, 0, 0};
     up = (vec4){0, 1, 0, 0};
     model_view = look_at(eye, at, up);
     //projection = ortho(-25, 25, -25, 25, 25, -25);
-    projection = frustum(-2.5, 2.5, -2.5, 2.5, -1, -45);
-
-
-
-    // Use this for experimenting!
-    // ctm = rotate_y(270);
-    // ctm = matMult(translate(-20, 0, -20), ctm);
-    // eye = (vec4){0, 0, 0, 0};
-    // at = (vec4){1, 0, 0, 0};
-    // up = (vec4){0, 1, 0, 0};
-    // model_view = look_at(eye, at, up);
-    // // printMat(model_view);
-    // // projection = ortho(-25, 25, 15, 65, 0, -50);
-    // //projection = frustum(-10, 10, -10, 10, 10, -10); //flips everything
-    // projection = frustum(-1, 1, -1, 1, -5, 10);
-
-
-
-
-    
-    // printMat(model_view);
-    
-    // projection = frustum(-50, 50, -50, 50, 50, -50);
-
+    projection = frustum(-1, 1, -1, 1, -1, -80);
     printMat(projection);
+
+    maxSteps = 180;
+    //currentState = FLYING_AROUND;
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
@@ -695,7 +724,7 @@ int main(int argc, char **argv)
     glutCreateWindow("Cube");
     //glewInit();
     init();
-    //glutIdleFunc(idle);
+    glutIdleFunc(idle);
     glutDisplayFunc(display);
     glutKeyboardFunc(keyboard);
     glutMouseFunc(mouse);

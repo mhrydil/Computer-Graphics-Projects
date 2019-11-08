@@ -239,8 +239,9 @@
 	],
 	"file_history":
 	[
-		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj2/proj2.c",
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/common/matLib.c",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj2/vshader_ctm.glsl",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj2/proj2.c",
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0445_DataStructures_TA/labs/lab8/prep/cs445-lab08-!prep/Lab 10 Instructions.md",
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj2/Makefile",
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj2/proj2.sublime-project",
@@ -260,7 +261,6 @@
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS0449_Systems/Notes/oct28.md",
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0445_DataStructures_TA/Assignments/cs445-a3-mbh38/cs445/a3/SemiMagic.java",
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0445_DataStructures_TA/Assignments/cs445-a3-!staff/!solution/cs445/a3/SemiMagic.java",
-		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj2/vshader_ctm.glsl",
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj2/fshader.glsl",
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/Neuro/Notes/oct28.md",
 		"/private/var/folders/r5/tcpy5gh52g9b3jsjvb5_sr9r0000gn/T/51d557a1-35c1-4a08-90bc-72ce9cb4dea9/afs/pitt.edu/home/m/b/mbh38/private/cs0449/proj2/mymalloc.h",
@@ -370,7 +370,7 @@
 	],
 	"find":
 	{
-		"height": 39.0
+		"height": 26.0
 	},
 	"find_in_files":
 	{
@@ -384,6 +384,11 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"x",
+			"solve",
+			"ewall",
+			"solve",
+			"printmaze",
 			"vert",
 			"start",
 			"0",
