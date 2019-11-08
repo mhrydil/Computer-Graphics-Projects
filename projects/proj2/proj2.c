@@ -101,6 +101,8 @@ int windowSize;
 vec4 downClick;
 
 void printMaze(int size);
+
+// helper function for debugging maze generation
 void printCell(int x, int y){
     printf("north: %d\n", maze[x][y].nWall);
     printf("east: %d\n", maze[x][y].eWall);
@@ -113,18 +115,20 @@ int randomNum(int from, int to){ //returns a random number betweeen from and to 
     return rand() % (to-from);
 }
 
+
+//helper functions for the generation of the maze
 void drawWestWalls(int r, int c, int rMin, int rMax){
     for(int i=rMin; i<rMax; i++){
         maze[i][c].wWall = 1;
     }
 }
-
 void drawNorthWalls(int r, int c, int cMin, int cMax){
     for(int i=cMin; i<cMax; i++){
         maze[r][i].nWall = 1;
     }
 }
 
+// recursive function that generates the inner walls for the maze at random
 void generateMazeRec(int rMax, int rMin, int cMax, int cMin){
     int rDiff = rMax - rMin;
     int cDiff = cMax - cMin;
@@ -184,7 +188,7 @@ void generateMazeRec(int rMax, int rMin, int cMax, int cMin){
         generateMazeRec(rMax, r, cMax, c);
     }
 }
-
+// Builds outer walls for the maze
 void generateMaze(size){
     //generate the outer walls for the maze
     for(int i=0; i<size; i++){
@@ -197,9 +201,9 @@ void generateMaze(size){
     }
     //generate the inner walls for the maze, recursively
     generateMazeRec(size, 0, size, 0);
-
 }
 
+// helper functions for solveMaze function
 int canGoEast(int row, int col){
     if(col == 7) return 0;
     if(maze[row][col].eWall) return 0;
@@ -228,6 +232,8 @@ int canGoSouth(int row, int col){
     if(maze[row+1][col].isUsed) return 0;
     return 1;
 }
+
+// recursive backtracking algorithm to solve the maze. Stores the sequence of moves in the array solution
 void solveMaze(int row, int col){
     if(row == 7 && col == 7){
         solved = 1; //base case
@@ -271,6 +277,7 @@ void solveMaze(int row, int col){
     }
 }
 
+//prints the solution to the maze to the console
 void printSolution(){
     int count = 0;
     while(solution[count] != 0){
@@ -278,7 +285,7 @@ void printSolution(){
     }
 }
 
-
+// prints the maze to console
 void printMaze(int size){
     for(int i=0; i<size; i++){
         for(int j=0; j<size; j++){
@@ -305,7 +312,8 @@ void printMaze(int size){
     printf("+\n");
 }
 
-void buildSquare(vec4* start){
+// builds a cube at the address passed in
+void buildCube(vec4* start){
     start[0] = (vec4){-.5, -.5, .5, 1};
     start[1] = (vec4){.5, -.5, .5, 1};
     start[2] = (vec4){.5, .5, .5, 1};
@@ -328,9 +336,9 @@ void buildSquare(vec4* start){
         start[30+i] = matVec(rotate_x(270), start[i]);
     }
 }
-
+//Helper methods for the makeScene function
 void buildNorthWall(vec4* start){
-    buildSquare(start);
+    buildCube(start);
     for(int i=0; i<36; i++){
         start[i] = matVec(scale(5, 4, .5), start[i]);
         start[i] = matVec(translate(2.5, -.5, 0), start[i]);
@@ -338,14 +346,14 @@ void buildNorthWall(vec4* start){
     }
 }
 void buildEastWall(vec4* start){
-    buildSquare(start);
+    buildCube(start);
     for(int i=0; i<36; i++){
         start[i] = matVec(scale(5, 4, .5), start[i]);
         start[i] = matVec(translate(2.5, -.5, -5), start[i]);
     }
 }
 void buildSouthWall(vec4* start){
-    buildSquare(start);
+    buildCube(start);
     for(int i=0; i<36; i++){
         start[i] = matVec(scale(5, 4, .5), start[i]);
         start[i] = matVec(translate(2.5, -.5, 5), start[i]);
@@ -353,15 +361,16 @@ void buildSouthWall(vec4* start){
     }
 }
 void buildWestWall(vec4* start){
-    buildSquare(start);
+    buildCube(start);
     for(int i=0; i<36; i++){
         start[i] = matVec(scale(5, 4, .5), start[i]);
         start[i] = matVec(translate(2.5, -.5, 0), start[i]);
-        // start[i] = matVec(rotate_y(90), start[i]);
     }
 }
 
-
+// First, create a cube and scale it on y axis to represent a pillar, copy it to all locations
+// Next, based on the 2d array of cells(maze variable) creates all of the walls
+// Finally, creates the ground
 void makeScene(vec4* vert, int numVertices, float t){
     vert[0] = (vec4){-.5, -.5, .5, 1};
     vert[1] = (vec4){.5, -.5, .5, 1};
@@ -431,28 +440,9 @@ void makeScene(vec4* vert, int numVertices, float t){
         vertices[i] = matVec(scale(100, .2, 100), vertices[i%36]);
         vertices[i] = matVec(translate(25, -2.5, -25), vertices[i]);
     }
-
-
 }
 
-//fills the triangles with random colors.
-void fillColors(vec4* colors, int size){
-    for (int i=0; i<size/3; i++)
-    {
-        float randx = ((double) rand() / (RAND_MAX));
-        float randy = ((double) rand() / (RAND_MAX));
-        float randz = ((double) rand() / (RAND_MAX));
-
-        vec4 curr = {randx, randy, randz, 1};
-        vec4 next = {randx, randy, randz, 1};
-        vec4 tip = {randx, randy, randz, 1};
-
-        colors[i*3+1] = curr;
-        colors[i*3] = next;
-        colors[i*3+2] = tip;
-    }
-}
-
+// fills the cubes with the textures for what that cube represents(pillar, wall, ground)
 void fillTextures(vec2* textures, int size){
     // Applies stone texture to pillars
     textures[0] = (vec2){.5, .5};
@@ -508,9 +498,6 @@ vec4 getXYZ (int x, int y){ //Only really used for rotation using mouse, not ess
 
 void init(void)
 {
-
-    //glEnable(GL_DEPTH_TEST);
-
     int width = 800;
     int height = 800;
     GLubyte myTexels[width][height][3];
@@ -610,28 +597,21 @@ void keyboard(unsigned char key, int mousex, int mousey)
         gameMode = 0;
         currentState = FLYING_AROUND;
     }
-    if(key == 'd')
-        currentState = FLYING_DOWN;
-    if(key == 'r')
-        currentState = TURN_RIGHT;
-    if(key == 'f')
-        currentState = WALK_FORWARD;
 
-    glutPostRedisplay();
+    //glutPostRedisplay();
 }
 
+// not used for this, but can be used to rotate maze about origin by uncommenting the motion function in main
 void mouse(int button, int state, int x, int y){
     if(button == 0){
         if(state == 0){
             downClick = getXYZ(x,y);
         }
-        if (state == 1){
-            //mehhh
-        }
     }
-    glutPostRedisplay();
+    // glutPostRedisplay();
 }
 
+// not used for this, but can be used to rotate maze about origin by uncommenting the motion function in main
 void motion(int x, int y){
     vec4 origin = {0, 0, 0, 1};
 
@@ -649,24 +629,19 @@ void motion(int x, int y){
     downClick = curr;
 }
 
+// Arrow keys assigned for navigating through maze in play mode
 void special(int key, int x, int y){
-	printf("Special: Key: %d, X: %d, Y: %d\n", key, x, y);
 	switch(key){
-		case 101: {
+        case 100: { //left arrow key
+            currentState = TURN_LEFT;
+            break;
+        }
+		case 101: { //up arrow key
             currentState = WALK_FORWARD;
             break;
         }
-		case 102: {
+		case 102: { //right arrow key
             currentState = TURN_RIGHT;
-            break;
-        }
-		// case 103: {
-  //           eye.z += .1; 
-  //           at.z += .1;
-  //           break;
-  //       }
-		case 100: {
-            currentState = TURN_LEFT;
             break;
         }
 	}
@@ -675,7 +650,7 @@ void special(int key, int x, int y){
 	glutPostRedisplay();	
 }
 
-
+// Animation! (see readme.md)
 void idle(void){
     if(currentState == FLYING_AROUND){
         eye = matVec(rotate_y(2), eye);
@@ -869,13 +844,13 @@ void idle(void){
 
 int main(int argc, char **argv)
 {
-    srand(time(NULL));
+    srand(time(NULL)); //sets the seed for random based on the time to ensure randomly generated mazes
     windowSize = 800;
     int num_vertices = 5796;
     int mazeSize = 8;
     generateMaze(mazeSize);
     makeScene(vertices, num_vertices, 1);
-    fillColors(colors, num_vertices);
+    //fillColors(colors, num_vertices);
     fillTextures(tex_coords, num_vertices);
     int countWalls = 0;
     for(int i=0; i<mazeSize; i++){
