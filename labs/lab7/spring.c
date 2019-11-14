@@ -30,9 +30,9 @@
 
 #define BUFFER_OFFSET( offset )   ((GLvoid*) (offset))
 
-int num_vertices = 3888;
-vec4 vertices[3888];
-vec4 colors[3888];
+int num_vertices = 15552;
+vec4 vertices[15552];
+vec4 colors[15552];
 
 GLuint ctm_location;
 mat4 ctm = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}};
@@ -50,8 +50,8 @@ vec4 upClick;
 void fillEdges(vec4* vert, int numVertices, float t){
     
     GLfloat nextYCoord;
-    GLfloat theta;
-    GLfloat phi;
+    GLfloat theta; //theta is the angle of rotation around the z plane (0 - 2pi)
+    GLfloat phi; //phi is the angle of rotation upward the plane x = 0
     GLfloat theta2;
     GLfloat phi2;
     vec4 a;
@@ -61,15 +61,27 @@ void fillEdges(vec4* vert, int numVertices, float t){
 
     float sectionSize = 10;
 
-    for(int i = 0; i<9; i++){
-        theta = 0; // 0, 10, 20, 30, 40, 50, 60, 70, 80
-        theta2 = 10*(M_PI/180); // 10, 20, 30, 40, 50, 60, 70, 80
-        phi = (90 - (i*sectionSize))*(M_PI/180); //Z-angle
-        phi2 = (90 - (i+1)*sectionSize)*(M_PI/180);
-        a.x = sin(theta)*sin(phi);      a.y = cos(phi);     a.z = cos(theta) * sin(phi);    a.w = 1;
-        b.x = sin(theta2)*sin(phi);     b.y = cos(phi);     b.z = cos(theta2) * sin(phi);   b.w = 1;
-        c.x = sin(theta)*sin(phi2);     c.y = cos(phi2);    c.z = cos(theta) * sin(phi2);   c.w = 1;
-        d.x = sin(theta2)*sin(phi2);    d.y = cos(phi2);    d.z = cos(theta2) * sin(phi2);  d.w = 1;
+    for(int i = 0; i<36; i++){
+        a.x = cos(10*i*M_PI/180); a.y = sin((10*i)*M_PI/180); a.z = 0; a.w = 1;
+        a = vecScalar(.25, a);
+        a.w = 1;
+        a = matVec(translate(.75, 0, 0), a);
+        printf("%d:\na: ", i);
+        printVec(a);
+        b = matVec(rotate_y(10), a);
+        b = matVec(rotate_z(10), b);
+        printf("b: ");
+        printVec(b);
+        c.x = cos((10*(i+1))*M_PI/180); c.y = sin((10*(i+1))*(M_PI/180)); c.z = 0;    c.w = 1;
+        c = vecScalar(.25, c);
+        c.w = 1;
+        c = matVec(translate(.75, 0, 0), c);
+        printf("c: ");
+        printVec(c);
+        d = matVec(rotate_y(10), c);
+        d = matVec(rotate_z(10), d);
+        printf("d: ");
+        printVec(d);
 
         vert[i*6] = a;
         vert[i*6+1] = b;
@@ -78,14 +90,18 @@ void fillEdges(vec4* vert, int numVertices, float t){
         vert[i*6+4] = b;
         vert[i*6+5] = d;
     }
+
     for(int i=0; i<36; i++){ //rotate the 10 degree section of vertices around the sphere 36 times
-        for(int j=0; j<54; j++){
-            vert[i*54 + j] = matVec(rotate_y(i*10), vert[j]);
+        for(int j=0; j<216; j++){
+            vert[i*216 + j] = matVec(rotate_y(i*10), vert[j]);
+            vert[i*216 + j] = matVec(translate(0, .125*i, 0), vert[i*216+j]);
         }
     }
-    for(int i=0; i<1944; i++){
-        vert[1944+i] = matVec(rotate_x(180), vert[i]);
+    for(int i=0; i<7776; i++){
+        vert[7776+i] = matVec(rotate_x(180), vert[i]);
+        vert[7776+i] = matVec(translate(0, 4.5, 0), vert[7776+i]);
     }
+
 }
 
 
@@ -226,16 +242,19 @@ void special(int key, int x, int y){
 int main(int argc, char **argv)
 {
     windowSize = 512;
-    int num_vertices = 3888;
+    int num_vertices = 15552;
     fillEdges(vertices, num_vertices, 1);
     fillColors(colors, num_vertices);
+    for(int i=0; i<num_vertices; i++){
+        vertices[i] = matVec(scale(1, .25, 1), vertices[i]);
+    }
     ctm = translate(0, 0, 0);
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
     glutInitWindowSize(windowSize, windowSize);
     glutInitWindowPosition(200,200);
-    glutCreateWindow("SPHERE");
+    glutCreateWindow("Torus");
     //glewInit();
     init();
     //glutIdleFunc(idle);
