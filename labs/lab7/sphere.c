@@ -32,6 +32,7 @@
 
 int num_vertices = 3888;
 vec4 vertices[3888];
+vec4 normals[3888];
 vec4 colors[3888];
 
 GLuint ctm_location;
@@ -107,6 +108,22 @@ void fillColors(vec4* colors, int size){
     }
 }
 
+void fillNormals(vec4* normals, int size){
+	for(int i=0; i<size/3; i++){
+		vec4 first = vertices[i*3];
+		vec4 second = vertices[i*3+1];
+		vec4 third = vertices[i*3+2];
+
+		vec4 v1 = vecSub(second, first);
+		vec4 v2 = vecSub(third, second);
+		vec4 cross = vecCross(v1, v2);
+		vec4 norm = vecScalar(1/getMagnitude(cross), cross);
+		normals[i*3] = norm;
+		normals[i*3+1] = norm;
+		normals[i*3+2] = norm;
+	}
+}
+
 
 void init(void)
 {
@@ -124,7 +141,7 @@ void init(void)
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) + sizeof(colors), NULL, GL_STATIC_DRAW);
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-    glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices), sizeof(colors), colors);
+    glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices), sizeof(normals), normals);
 
     GLuint vPosition = glGetAttribLocation(program, "vPosition");
     glEnableVertexAttribArray(vPosition);
@@ -230,6 +247,7 @@ int main(int argc, char **argv)
     int num_vertices = 3888;
     fillEdges(vertices, num_vertices, 1);
     fillColors(colors, num_vertices);
+    fillNormals(normals, num_vertices);
     ctm = translate(0, 0, 0);
 
     glutInit(&argc, argv);
