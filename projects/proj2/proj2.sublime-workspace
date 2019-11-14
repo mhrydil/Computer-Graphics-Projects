@@ -43,6 +43,32 @@
 	},
 	"buffers":
 	[
+		{
+			"file": "proj2.c",
+			"settings":
+			{
+				"buffer_size": 27683,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/common/matLib.c",
+			"settings":
+			{
+				"buffer_size": 15675,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/common/matLib.h",
+			"settings":
+			{
+				"buffer_size": 2667,
+				"line_ending": "Unix"
+			}
+		}
 	],
 	"build_system": "Packages/Makefile/Make.sublime-build",
 	"build_system_choices":
@@ -72,16 +98,16 @@
 		"selected_items":
 		[
 			[
+				"markdown",
+				"Set Syntax: Markdown"
+			],
+			[
 				"package control",
 				"Package Control: Install Package"
 			],
 			[
 				"package",
 				"Package Control: Install Package"
-			],
-			[
-				"markdown",
-				"Set Syntax: Markdown Extended"
 			],
 			[
 				"brows",
@@ -239,6 +265,7 @@
 	],
 	"file_history":
 	[
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj2/README.md",
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/common/matLib.c",
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj2/vshader_ctm.glsl",
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj2/proj2.c",
@@ -365,8 +392,7 @@
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/labs/lab2/matLib.h",
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/labs/lab2/README.txt",
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0445_DataStructures_TA/cs445-lab02/cs445/lab2/BagInterface.java",
-		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0445_DataStructures_TA/cs445-lab02/cs445/lab2/LongestCommonSubsequence.java",
-		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0445_DataStructures_TA/cs445-lab02-!staff/cs445/lab2/BagInterface.java"
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0445_DataStructures_TA/cs445-lab02/cs445/lab2/LongestCommonSubsequence.java"
 	],
 	"find":
 	{
@@ -384,6 +410,19 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"fillcolors",
+			"buildsquare",
+			"makescene",
+			"turning",
+			"keyboard",
+			"mode",
+			"motion",
+			"solved",
+			"directionfacing",
+			"currindex",
+			"currindexd",
+			"currindex",
+			"idle",
 			"x",
 			"solve",
 			"ewall",
@@ -433,8 +472,106 @@
 	"groups":
 	[
 		{
+			"selected": 0,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "proj2.c",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 27683,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								27683,
+								27683
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/C++/C.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 3381.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/common/matLib.c",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 15675,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								13841,
+								13841
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/C++/C.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 6533.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/common/matLib.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2667,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2661,
+								2559
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 666.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				}
 			]
 		}
 	],
