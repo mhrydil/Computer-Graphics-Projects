@@ -1,0 +1,570 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"Illegal",
+				"IllegalArgumentException"
+			],
+			[
+				"z",
+				"z"
+			],
+			[
+				"setTimeS",
+				"setTimeSBegins"
+			],
+			[
+				"settimeS",
+				"setTimeSBegins"
+			],
+			[
+				"timese",
+				"timeServiceBegins"
+			],
+			[
+				"athle",
+				"athlete2sportsFile"
+			],
+			[
+				"patient2",
+				"patient2FoodDrugFile"
+			],
+			[
+				"miles",
+				"MILES_PER_MARATHON"
+			],
+			[
+				"timeIn",
+				"timeInMinutes"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "lab8.c",
+			"settings":
+			{
+				"buffer_size": 7372,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "vshader_ctm.glsl",
+			"settings":
+			{
+				"buffer_size": 420,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"markdown",
+				"Set Syntax: Markdown"
+			],
+			[
+				"java",
+				"Set Syntax: Java"
+			],
+			[
+				"markdw",
+				"Set Syntax: Markdown"
+			],
+			[
+				"package",
+				"Package Control: Install Package"
+			],
+			[
+				"brows",
+				"SFTP: Browse Server…"
+			],
+			[
+				"sftp",
+				"SFTP: Browse Server…"
+			],
+			[
+				"package control insta",
+				"Package Control: Install Package"
+			],
+			[
+				"syntax markdown",
+				"Set Syntax: Markdown"
+			],
+			[
+				"syntax markdw",
+				"Set Syntax: Markdown"
+			],
+			[
+				"uith\t",
+				"UI: Select Color Scheme"
+			],
+			[
+				"ui",
+				"UI: Select Color Scheme"
+			],
+			[
+				"syntax c",
+				"Set Syntax: C"
+			],
+			[
+				"word wra",
+				"Word Wrap: Toggle"
+			],
+			[
+				"syntax markdow",
+				"Set Syntax: Markdown"
+			],
+			[
+				"uis",
+				"UI: Select Color Scheme"
+			],
+			[
+				"Markdown",
+				"Set Syntax: Markdown"
+			],
+			[
+				"syntax java",
+				"Set Syntax: Java"
+			],
+			[
+				"set syntax pia",
+				"Set Syntax: Plain Text"
+			],
+			[
+				"html",
+				"HTML: Encode Special Characters"
+			],
+			[
+				"plain tex\t",
+				"Set Syntax: Plain Text"
+			],
+			[
+				"syntax htm\t",
+				"Set Syntax: HTML"
+			],
+			[
+				"syntax text",
+				"Set Syntax: Plain Text"
+			],
+			[
+				"theme",
+				"UI: Select Theme"
+			],
+			[
+				"plain\t",
+				"Set Syntax: Plain Text"
+			],
+			[
+				"c",
+				"Set Syntax: C"
+			],
+			[
+				"plain",
+				"Set Syntax: Plain Text"
+			],
+			[
+				"wrap",
+				"Word Wrap: Toggle"
+			],
+			[
+				"syn plain\t",
+				"Set Syntax: Plain Text"
+			],
+			[
+				"mark",
+				"Set Syntax: MultiMarkdown"
+			],
+			[
+				"build",
+				"Build With: JavaC"
+			],
+			[
+				"",
+				"Build With: JavaC"
+			],
+			[
+				"syn ja\t",
+				"Set Syntax: Java"
+			]
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 145.0,
+		"history":
+		[
+			"print \"x\";",
+			"print \"x\"",
+			"print x",
+			"import urllib.request,os,hashlib; h = '6f4c264a24d933ce70df5dedcf1dcaee' + 'ebe013ee18cced0ef93d5f746d80ef60'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)",
+			"echo",
+			"javac GamePlayer.java",
+			"ls",
+			"dir",
+			"ls",
+			"lw",
+			"text size =14",
+			"view.settings().set(\"font_size\", 12)",
+			"view.settings().set(\"font_size\", 16)",
+			"view.settings().set(\"font_size\", 14)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": true,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/labs/lab8"
+	],
+	"file_history":
+	[
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/labs/lab8/Makefile",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/Neuro/Notes/nov22.md",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/labs/lab7/spring.c",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1555_DatabaseManagement/Project/PittSocial.java",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS0449_Systems/Notes/nov20",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0401_Java_TA/labs/lab11/Lab11.java",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0401_Java_TA/labs/lab12/Lab12.java",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/Neuro/Notes/nov20.md",
+		"/Users/matthewhrydil/temporary/DupesTest/DupesTest.java",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0401_Java_TA/labs/lab12/MovieDB.java",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0445_DataStructures_TA/labs/lab9/cs445-lab09-!staff/cs445/binary/BinaryTree.java",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0445_DataStructures_TA/labs/lab9/cs445-lab09-!staff/cs445/binary/BinaryNode.java",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0445_DataStructures_TA/labs/lab9/cs445-lab09-!staff/RebuildBinaryTree.java",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS0449_Systems/Notes/nov18.md",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1555_DatabaseManagement/Project/User.java",
+		"/Users/matthewhrydil/temporary/stackTest/reverseStack.java",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/Neuro/Notes/nov18.md",
+		"/Users/matthewhrydil/temporary/AmazonTest/AmazonTest.java",
+		"/Users/matthewhrydil/temporary/MyQueue/MyQueue.java",
+		"/Users/matthewhrydil/temporary/MyQueue/MyStack.java",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1555_DatabaseManagement/Recitations/recitation12/TranDemo1.java",
+		"/Users/matthewhrydil/temporary/LinkedLists/LinkedLists.java",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/labs/lab7/sphere.c",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/labs/lab7/Makefile",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/labs/lab7/sphere2.c",
+		"/Users/matthewhrydil/temporary/AmazonTest/analysis",
+		"/Users/matthewhrydil/temporary/LinkedLists/LinkedListsTests.java",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/Neuro/Notes/nov15.md",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/labs/lab7/spring2.c",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj3/vshader_ctm.glsl",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj3/fshader.glsl",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj3/proj3.c",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj1/fshader.glsl",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj1/vshader_ctm.glsl",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj3/sphere.c",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj3/initShader.c",
+		"/Users/matthewhrydil/temporary/LinkedLists/RemoveDupes.java",
+		"/Users/matthewhrydil/temporary/RemoveDupes/RemoveDupes.java",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS0449_Systems/Notes/nov13.md",
+		"/Users/matthewhrydil/temporary/palindromePerm/PalindromePerm.java",
+		"/Users/matthewhrydil/temporary/RemoveDUpes/RemoveDupes.java",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/Neuro/Notes/nov13.md",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0401_Java_TA/labs/lab11/MyDeque.java",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0401_Java_TA/labs/lab11/SimpleDeque.java",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj3/proj3_notes.md",
+		"/Users/matthewhrydil/temporary/UniqueString/UniqueString.java",
+		"/Users/matthewhrydil/temporary/BinaryTreeTest/BinaryTreeTest.java",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS0449_Systems/Notes/nov11.md",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/Neuro/Notes/nov11.md",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS0449_Systems/Thoth/private/cs0449/projects/proj2/bigdriver.c",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj2/README.md",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS0449_Systems/Thoth/private/cs0449/projects/proj2/mymalloc.c",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS0449_Systems/Thoth/private/cs0449/projects/proj2/mymalloc.h",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS0449_Systems/Thoth/private/cs0449/projects/proj2/mydriver.c",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS0449_Systems/Thoth/private/cs0449/projects/proj2/test.c",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS0449_Systems/Thoth/private/cs0449/projects/proj2/Makefile",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS0449_Systems/Notes/nov4.md",
+		"/Users/matthewhrydil/Desktop/test.java",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS0449_Systems/Thoth/private/cs0449/labs/lab6/lab6.c",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/labs/lab6/lab6.sublime-project",
+		"/Users/matthewhrydil/Downloads/playertest-out.txt",
+		"/Users/matthewhrydil/Library/Application Support/Sublime Text 3/Packages/User/sftp_servers/pitt",
+		"/var/folders/r5/tcpy5gh52g9b3jsjvb5_sr9r0000gn/T/sublime-sftp-browse-1572535728/pitt/afs/pitt.edu/home/m/b/mbh38/private/cs0449/projects/proj2/mydriver.c",
+		"/var/folders/r5/tcpy5gh52g9b3jsjvb5_sr9r0000gn/T/sublime-sftp-browse-1572535871/pitt/afs/pitt.edu/home/m/b/mbh38/private/cs0449/projects/proj2/bigdriver.c",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0445_DataStructures_TA/labs/lab6/cs445-lab06-!staff/cs445/lab6/Sorting.java",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0445_DataStructures_TA/labs/lab6/cs445-lab06-!staff/cs445/lab6/SortTiming.java",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0401_Java_TA/labs/lab9/Lab9.java",
+		"/private/var/folders/r5/tcpy5gh52g9b3jsjvb5_sr9r0000gn/T/cca2a272-7122-4c81-a2dd-710efeb1e254/afs/pitt.edu/home/m/b/mbh38/private/cs0449/projects/proj2/bigdriver.c",
+		"/private/var/folders/r5/tcpy5gh52g9b3jsjvb5_sr9r0000gn/T/cca2a272-7122-4c81-a2dd-710efeb1e254/afs/pitt.edu/home/m/b/mbh38/private/cs0449/projects/proj2/test.c",
+		"/private/var/folders/r5/tcpy5gh52g9b3jsjvb5_sr9r0000gn/T/cca2a272-7122-4c81-a2dd-710efeb1e254/afs/pitt.edu/home/m/b/mbh38/private/cs0449/projects/proj2/mydriver.c",
+		"/private/var/folders/r5/tcpy5gh52g9b3jsjvb5_sr9r0000gn/T/cca2a272-7122-4c81-a2dd-710efeb1e254/afs/pitt.edu/home/m/b/mbh38/private/cs0449/projects/proj2/mymalloc.c",
+		"/private/var/folders/r5/tcpy5gh52g9b3jsjvb5_sr9r0000gn/T/cca2a272-7122-4c81-a2dd-710efeb1e254/afs/pitt.edu/home/m/b/mbh38/private/cs0449/projects/proj2/mymalloc.h",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1555_DatabaseManagement/Project/helpers/testInserts.sql",
+		"/private/var/folders/r5/tcpy5gh52g9b3jsjvb5_sr9r0000gn/T/51d557a1-35c1-4a08-90bc-72ce9cb4dea9/afs/pitt.edu/home/m/b/mbh38/private/cs0449/proj2/test.c",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS0449_Systems/Notes/oct28.md",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj2/proj2.c",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0445_DataStructures_TA/Assignments/cs445-a3-mbh38/cs445/a3/SemiMagic.java",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0445_DataStructures_TA/Assignments/cs445-a3-!staff/!solution/cs445/a3/SemiMagic.java",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj2/vshader_ctm.glsl",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj2/fshader.glsl",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/Neuro/Notes/oct28.md",
+		"/private/var/folders/r5/tcpy5gh52g9b3jsjvb5_sr9r0000gn/T/51d557a1-35c1-4a08-90bc-72ce9cb4dea9/afs/pitt.edu/home/m/b/mbh38/private/cs0449/proj2/mymalloc.h",
+		"/private/var/folders/r5/tcpy5gh52g9b3jsjvb5_sr9r0000gn/T/51d557a1-35c1-4a08-90bc-72ce9cb4dea9/afs/pitt.edu/home/m/b/mbh38/private/cs0449/proj2/mymalloc.c",
+		"/private/var/folders/r5/tcpy5gh52g9b3jsjvb5_sr9r0000gn/T/51d557a1-35c1-4a08-90bc-72ce9cb4dea9/afs/pitt.edu/home/m/b/mbh38/private/cs0449/proj2/Makefile",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/labs/lab5/textureLab.c",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/labs/lab5/fshader.glsl",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/labs/lab5/vshader.glsl",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1555_DatabaseManagement/Recitations/recitation9/09/JavaDemoWOInjection.java",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1555_DatabaseManagement/Recitations/recitation9/09/JavaDemoInjection.java",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1555_DatabaseManagement/Recitations/recitation9/09/JavaDemoTransaction.java",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1555_DatabaseManagement/Recitations/recitation9/09/JavaDemoException.java",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1555_DatabaseManagement/Recitations/recitation9/09/JavaDemoCursor.java",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1555_DatabaseManagement/Recitations/recitation9/09/JavaDemo.java",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/common/matLib.c",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj2/Makefile",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/Neuro/Notes/oct25.md",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/Notes/oct24.md",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/common/matLib.h",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS0449_Systems/Notes/oct23.md",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS0449_Systems/Projects/mbh38_proj2/mydriver.c",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/Neuro/Notes/oct23.md",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS0449_Systems/Projects/mbh38_proj2/Makefile",
+		"/private/var/folders/r5/tcpy5gh52g9b3jsjvb5_sr9r0000gn/T/51d557a1-35c1-4a08-90bc-72ce9cb4dea9/afs/pitt.edu/home/m/b/mbh38/private/cs0449/lab5/lab5.c",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0401_Java_TA/labs/lab7/movieFile.txt",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/Notes/oct22.md",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0401_Java_TA/labs/lab8/SimpleLList.java",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1555_DatabaseManagement/HW/hw6/hw6-sol.sql",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0445_DataStructures_TA/Assignments/cs445-a3-mbh38/Queens.java",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS0449_Systems/Notes/oct21.md",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/Neuro/Notes/oct21.md",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0401_Java_TA/labs/lab8/lab8out.txt",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0401_Java_TA/labs/lab8/Lab8.java",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj1/sphere.c",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj1/spring.c",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/labs/lab5/initShader.c",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/labs/lab5/Makefile",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/Neuro/Notes/oct18.md",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1555_DatabaseManagement/Notes/Oct17.md",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj1/matLib.h",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj1/matLib.c",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/labs/lab4/matLib.h",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/labs/lab4/matLib.c",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0401_Java_TA/labs/lab7/Lab7.java",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0401_Java_TA/labs/lab7/MovieDB.java",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0401_Java_TA/labs/lab7/Movie.java",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0445_DataStructures_TA/labs/lab5/cs445-lab05/cs445/lab5/Recursion.java",
+		"/Users/matthewhrydil/Box/cs445-lab05-!staff/!solution/cs445/lab5/Recursion.java",
+		"/Users/matthewhrydil/temporary/Test/test.java"
+	],
+	"find":
+	{
+		"height": 39.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+		],
+		"highlight": false,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "lab8.c",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 7372,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/C++/C.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 146.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "vshader_ctm.glsl",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 420,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								196,
+								196
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/OpenGL Shading Language (GLSL)/GLSL.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 26.0
+	},
+	"input":
+	{
+		"height": 44.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 144.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.sftp":
+	{
+		"height": 144.0
+	},
+	"output.unsaved_changes":
+	{
+		"height": 156.0
+	},
+	"pinned_build_system": "",
+	"project": "lab8.sublime-project",
+	"replace":
+	{
+		"height": 48.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": false,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 208.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+		"max_columns": 3
+	}
+}
