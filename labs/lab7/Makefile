@@ -14,3 +14,6 @@ torus: torus.c matLib.o
 
 spring: spring.c matLib.o
 	gcc -o spring spring.c matLib.o initShader.c -L/System/Library/Frameworks -framework GLUT -framework OpenGL -Wno-deprecated-declarations
+
+sphere2: sphere.c matLib.o
+	gcc -o sphere sphere.c matLib.o initShader.c -L/System/Library/Frameworks -framework GLUT -framework OpenGL -Wno-deprecated-declarations
