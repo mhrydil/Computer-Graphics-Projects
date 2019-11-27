@@ -30,20 +30,30 @@
 
 #define BUFFER_OFFSET( offset )   ((GLvoid*) (offset))
 
-int num_vertices = 3888;
-vec4 vertices[3888];
-vec4 colors[3888];
+int num_vertices = 3924;
+vec4 vertices[3924];
+vec4 colors[3924];
 
 GLuint ctm_location;
+GLuint projection_location;
+GLuint model_view_location;
+vec4 eye, at, up;
+int currDegree = -30; // used to stop the rotation about the x-axis from happening when it is at either bound
+int isAnimating = 0;
 mat4 ctm = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}};
-GLfloat x_value = 0;
-int isGoingRight = 1;
-int windowSize;
-int spinning = 0;
+mat4 projection = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}};
+mat4 model_view = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}};
+mat4 identity = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}};
 
-vec4 prev;
-vec4 downClick;
-vec4 upClick;
+mat4 red_ctm = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}};
+mat4 green_ctm = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}};
+mat4 blue_ctm = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}};
+mat4 yellow_ctm = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}};
+mat4 orange_ctm = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}};
+mat4 light_ctm = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}};
+mat4 table_ctm = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}};
+int windowSize;
+
 
 
 
@@ -86,33 +96,80 @@ void fillEdges(vec4* vert, int numVertices, float t){
     for(int i=0; i<1944; i++){
         vert[1944+i] = matVec(rotate_x(180), vert[i]);
     }
+
+    // builds the cube
+    vert[3888] = (vec4){-.5, -.5, .5, 1};
+    vert[3888 + 1] = (vec4){.5, -.5, .5, 1};
+    vert[3888 + 2] = (vec4){.5, .5, .5, 1};
+    vert[3888 + 3] = (vec4){-.5, -.5, .5, 1};
+    vert[3888 + 4] = (vec4){.5, .5, .5, 1};
+    vert[3888 + 5] = (vec4){-.5, .5, .5, 1};
+    for(int i=0; i<6; i++){ //rotate about y 90 degrees (right wall)
+        vert[6+3888 + i] = matVec(rotate_y(90), vert[3888 + i]);
+    }
+    for(int i=0; i<6; i++){ //rotate about y 180 degrees (back wall)
+        vert[12+3888 + i] = matVec(rotate_y(180), vert[3888 + i]);
+    }
+    for(int i=0; i<6; i++){ //rotate about y 270 degrees  (left wall)
+        vert[18+3888 + i] = matVec(rotate_y(270), vert[3888 + i]);
+    }
+    for(int i=0; i<6; i++){ //rotate about x 90 degrees (bottom wall)
+        vert[24+3888 + i] = matVec(rotate_x(90), vert[3888 + i]);
+    }
+    for(int i=0; i<6; i++){ //rotate about x 270 degrees (top wall)
+        vert[30+3888 + i] = matVec(rotate_x(270), vert[3888 + i]);
+    }
+
+    for(int i=0; i<36; i++){
+        vert[3888 + i] = matVec(scale(20, .1, 20), vert[3888+i]);
+        vert[3888 + i] = matVec(translate(0, -.05, 0), vert[3888+i]);
+    }
 }
 
 
 //fills the triangles with random colors.
 void fillColors(vec4* colors, int size){
-    for (int i=0; i<size/3; i++)
-    {
-        float randx = ((double) rand() / (RAND_MAX));
-        float randy = ((double) rand() / (RAND_MAX));
-        float randz = ((double) rand() / (RAND_MAX));
-        vec4 curr = {randx, randy, randz, 1};
-        vec4 next = {randx, randy, randz, 1};
-        vec4 tip = {randx, randy, randz, 1};
 
-        colors[i*3+1] = curr;
-        colors[i*3] = next;
-        colors[i*3+2] = tip;
+    for(int i=0; i<36; i++){
+        colors[3888 + i] = (vec4){0, .3, 0, 1};
+    }
+    for(int i=0; i<3888; i++){
+        colors[i] = (vec4){.25, 0, .25, 1};
     }
 }
 
 
 void init(void)
 {
+
+    fillEdges(vertices, num_vertices, 1);
+    fillColors(colors, num_vertices);
+    red_ctm = matMult(scale(.5, .5, .5), red_ctm);
+    red_ctm = matMult(translate(0, .5, 0), red_ctm);
+    green_ctm = matMult(scale(.5, .5, .5), green_ctm);
+    green_ctm = matMult(translate(1, .5, 0), green_ctm);
+    blue_ctm = matMult(scale(.5, .5, .5), blue_ctm);
+    blue_ctm = matMult(translate(2, .5, 0), blue_ctm);
+    yellow_ctm = matMult(scale(.5, .5, .5), yellow_ctm);
+    yellow_ctm = matMult(translate(3, .5, 0), yellow_ctm);
+    orange_ctm = matMult(scale(.5, .5, .5), orange_ctm);
+    orange_ctm = matMult(translate(4, .5, 0), orange_ctm);
+    light_ctm = matMult(scale(.3, .3, .3), light_ctm);
+    light_ctm = matMult(translate(0, 3, 0), light_ctm);
+    eye = (vec4){0, 0, 12, 1};
+    eye = matVec(rotate_x(-30), eye);
+    at = (vec4){0, 0, 0, 1};
+    up = (vec4){0, 1, 0, 1};
+    model_view = look_at(eye, at, up);
+    projection = frustum(-1, 1, -1, 1, -1, -25);
+
+
     GLuint program = initShader("vshader_ctm.glsl", "fshader.glsl");
     glUseProgram(program);
 
     ctm_location = glGetUniformLocation(program, "ctm");
+    projection_location = glGetUniformLocation(program, "projection");
+    model_view_location = glGetUniformLocation(program, "model_view");
 
     GLuint vao;
     glGenVertexArrays(1, &vao);
@@ -142,103 +199,148 @@ void display(void)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    
+
+    glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &red_ctm);
+    glDrawArrays(GL_TRIANGLES, 0, 3888);
+    
+    glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &green_ctm);
+    glDrawArrays(GL_TRIANGLES, 0, 3888);
+
+    glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &blue_ctm);
+    glDrawArrays(GL_TRIANGLES, 0, 3888);
+
+    glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &yellow_ctm);
+    glDrawArrays(GL_TRIANGLES, 0, 3888);
+
+    glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &orange_ctm);
+    glDrawArrays(GL_TRIANGLES, 0, 3888);
+
+    glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &light_ctm);
+    glDrawArrays(GL_TRIANGLES, 0, 3888);
+
     glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &ctm); //Arguments (from first to last)
                                                                     // The location (in GLuint) from the glGetUniformLocation() function
                                                                     // The number of elements (1 matrix in this case)
                                                                     // Transpose (no transpose in this case)
                                                                     // Pointer to the matrix
+    glDrawArrays(GL_TRIANGLES, 3888, 3924);
+
+    glUniformMatrix4fv(projection_location, 1, GL_FALSE, (GLfloat *) &projection);
+    glUniformMatrix4fv(model_view_location, 1, GL_FALSE, (GLfloat *) &model_view);
+
 
     glPolygonMode(GL_FRONT, GL_FILL);
     glPolygonMode(GL_BACK, GL_LINE);
-    glDrawArrays(GL_TRIANGLES, 0, num_vertices);
+    
 
     glutSwapBuffers();
 }
 
 void keyboard(unsigned char key, int mousex, int mousey)
 {
-    if(key == 'q')
-    	exit(0);
+    switch(key){
+        case 'q':
+            exit(0);
+        case 'a':
+            isAnimating = 1;
+            break;
+        case 'x':
+            isAnimating = 0;
+            break;
+        case 'u':
+            light_ctm = matMult(translate(0, 1, 0), light_ctm);
+            glutPostRedisplay();
+            break;
+        case 'd':
+            light_ctm = matMult(translate(0, -1, 0), light_ctm);
+            glutPostRedisplay();
+            break;
+        case 'l':
+            light_ctm = matMult(translate(-1, 0, 0), light_ctm);
+            glutPostRedisplay();
+            break;
+        case 'r':
+            light_ctm = matMult(translate(1, 0, 0), light_ctm);
+            glutPostRedisplay();
+            break;
+        case 'f':
+            light_ctm = matMult(translate(0, 0, 1), light_ctm);
+            glutPostRedisplay();
+            break;
+        case 'b':
+            light_ctm = matMult(translate(0, 0, -1), light_ctm);
+            glutPostRedisplay();
+            break;
 
-    glutPostRedisplay();
-}
+    }
 
-vec4 getXYZ (int x, int y){
-    vec4 result;
-    GLfloat xunit = (float)x / (float)windowSize; 
-    GLfloat yunit = (float)y / (float)windowSize; 
-    xunit = ((xunit - .5)) * 2; 
-    yunit = ((yunit - .5)) * 2; 
-    GLfloat zSquared = 1 - (xunit*xunit) - (yunit*yunit);
-
-    result.x = xunit;
-    result.y = -yunit;
-    result.z = sqrt(zSquared);
-    result.w = 1;
-
-    return result;
+    // glutPostRedisplay();
 }
 
 
 void mouse(int button, int state, int x, int y){
-    vec4 point = getXYZ(x, y);
-
-    if(button == 0){
-        if(state == 0){
-            downClick = getXYZ(x,y);
-        }
-        if (state == 1){
-            //mehhh
-        }
-    }
     glutPostRedisplay();
 }
 
 void motion(int x, int y){
-    spinning = 0;
-    vec4 origin = {0, 0, 0, 1};
-
-    vec4 tail = vecSub(downClick, origin);
-    vec4 curr = getXYZ(x, y);
-    vec4 head = vecSub(curr, origin);
-    vec4 diff = vecSub(head, tail);
-    vec4 orthog = vecCross(tail, head); //vector orthogonal to both the tail and head vectors
-
-    GLfloat dotUnit = (vecDot(tail, head)) / (getMagnitude(tail) * getMagnitude(head));
-    GLfloat theta = acos(dotUnit);
-
-    mat4 rotation = rotateAboutVector(orthog, theta*180/M_PI);
-    ctm = matMult(rotation, ctm);
     glutPostRedisplay();
-    downClick = curr;
 }
 
 void special(int key, int x, int y){
-	printf("Special: Key: %d, X: %d, Y: %d\n", key, x, y);
 	switch(key){
-		case 101: ctm = matMult(scale(1.02, 1.02, 1.02), ctm); break;
-		case 103: ctm = matMult(scale(1/1.02, 1/1.02, 1/1.02), ctm); break;
+        case 100:
+            eye = matVec(rotate_y(-5), eye);
+            model_view = look_at(eye, at, up);
+            break;
+		case 101:
+            if(currDegree != -85){
+                eye = matVec(rotate_x(-5), eye);
+                model_view = look_at(eye, at, up);
+                currDegree -= 5;
+            }
+            break;
+        case 102:
+            eye = matVec(rotate_y(5), eye);
+            model_view = look_at(eye, at, up);
+            break;
+		case 103:
+            if(currDegree != 0){
+                eye = matVec(rotate_x(5), eye);
+                model_view = look_at(eye, at, up);
+                currDegree += 5;
+            }
+            break;
 	}
 	glutPostRedisplay();	
+}
+
+void idle(void){
+    if(isAnimating){
+        green_ctm = matMult(rotate_y(2), green_ctm);
+        blue_ctm = matMult(rotate_y(4), blue_ctm);
+        yellow_ctm = matMult(rotate_y(3), yellow_ctm);
+        orange_ctm = matMult(rotate_y(8), orange_ctm);
+    }
+    glutPostRedisplay();
 }
 
 
 int main(int argc, char **argv)
 {
     windowSize = 512;
-    int num_vertices = 3888;
-    fillEdges(vertices, num_vertices, 1);
-    fillColors(colors, num_vertices);
-    ctm = translate(0, 0, 0);
+    num_vertices = 3924;
+
+
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
     glutInitWindowSize(windowSize, windowSize);
-    glutInitWindowPosition(200,200);
-    glutCreateWindow("SPHERE");
+    glutInitWindowPosition(50,500);
+    glutCreateWindow("Project 3");
     //glewInit();
     init();
-    //glutIdleFunc(idle);
+    glutIdleFunc(idle);
     glutDisplayFunc(display);
     glutKeyboardFunc(keyboard);
     glutMouseFunc(mouse);

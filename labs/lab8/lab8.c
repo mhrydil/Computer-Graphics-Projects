@@ -30,13 +30,18 @@
 
 #define BUFFER_OFFSET( offset )   ((GLvoid*) (offset))
 
-int num_vertices = 3888;
-vec4 vertices[3888];
-vec4 normals[3888];
-vec4 colors[3888];
-
+int num_vertices = 3924;
+vec4 vertices[3924];
+vec4 normals[3924];
+vec4 colors[3924];
 GLuint ctm_location;
+GLuint model_view_location;
+GLuint light_pos_location;
+GLuint is_shadow_location;
+GLuint projection;
 mat4 ctm = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}};
+mat4 projection = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}};
+mat4 model_view_matrix = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}};
 GLfloat x_value = 0;
 int isGoingRight = 1;
 int windowSize;
@@ -45,7 +50,6 @@ int spinning = 0;
 vec4 prev;
 vec4 downClick;
 vec4 upClick;
-
 
 
 void fillEdges(vec4* vert, int numVertices, float t){
@@ -86,6 +90,38 @@ void fillEdges(vec4* vert, int numVertices, float t){
     }
     for(int i=0; i<1944; i++){
         vert[1944+i] = matVec(rotate_x(180), vert[i]);
+    }
+    for(int i=0; i<num_vertices; i++){
+        vert[i] = matVec(scale(.25, .25, .25), vert[i]);
+        vert[i] = matVec(translate(-.5, .25, 0), vert[i]);
+    }
+
+    // builds the cube
+    vert[3888] = (vec4){-.5, -.5, .5, 1};
+    vert[3888 + 1] = (vec4){.5, -.5, .5, 1};
+    vert[3888 + 2] = (vec4){.5, .5, .5, 1};
+    vert[3888 + 3] = (vec4){-.5, -.5, .5, 1};
+    vert[3888 + 4] = (vec4){.5, .5, .5, 1};
+    vert[3888 + 5] = (vec4){-.5, .5, .5, 1};
+    for(int i=0; i<6; i++){ //rotate about y 90 degrees (right wall)
+        vert[6+3888 + i] = matVec(rotate_y(90), vert[3888 + i]);
+    }
+    for(int i=0; i<6; i++){ //rotate about y 180 degrees (back wall)
+        vert[12+3888 + i] = matVec(rotate_y(180), vert[3888 + i]);
+    }
+    for(int i=0; i<6; i++){ //rotate about y 270 degrees  (left wall)
+        vert[18+3888 + i] = matVec(rotate_y(270), vert[3888 + i]);
+    }
+    for(int i=0; i<6; i++){ //rotate about x 90 degrees (bottom wall)
+        vert[24+3888 + i] = matVec(rotate_x(90), vert[3888 + i]);
+    }
+    for(int i=0; i<6; i++){ //rotate about x 270 degrees (top wall)
+        vert[30+3888 + i] = matVec(rotate_x(270), vert[3888 + i]);
+    }
+
+    for(int i=0; i<36; i++){
+        vert[3888 + i] = matVec(scale(.5, .5, .5), vert[3888+i]);
+        vert[3888 + i] = matVec(translate(.5, .25, 0), vert[3888+i]);
     }
 
 }
@@ -131,6 +167,25 @@ void init(void)
     glUseProgram(program);
 
     ctm_location = glGetUniformLocation(program, "ctm");
+    model_view_location = glGetUniformLocation(program, "model_view_matrix");
+    light_pos_location = glGetUniformLocation(program, "light_position");
+    is_shadow_location = glGetUniformLocation(program, "is_shadow");
+    projection_location = glGetUniformLocation(program, "projection");
+
+    float eye_x, eye_y, eye_z;
+    float at_x, at_y, at_z;
+    float light_x, light_y, light_z;
+    printf("Please enter an eye point: ");
+    scanf("(%f,%f,%f)", &eye_x, &eye_y, &eye_z);
+    vec4 eye = (vec4){eye_x, eye_y, eye_z, 1};
+    printf("Please enter an at point: ");
+    scanf("(%f,%f,%f)", &at_x, &at_y, &at_z);
+    vec4 at = (vec4){at_x, at_y, at_z, 1};
+    printf("Please enter a light point: ");
+    scanf("(%f,%f,%f)", &light_x, &light_y, &light_z);
+    vec4 light = (vec4){light_x, light_y, light_z, 1};
+    vec4 up = (vec4){0, 1, 0, 1};
+    model_view_matrix = look_at(eye, at, up);
 
     GLuint vao;
     glGenVertexArrays(1, &vao);
@@ -141,7 +196,7 @@ void init(void)
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) + sizeof(colors), NULL, GL_STATIC_DRAW);
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-    glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices), sizeof(normals), normals);
+    glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices), sizeof(colors), colors);
 
     GLuint vPosition = glGetAttribLocation(program, "vPosition");
     glEnableVertexAttribArray(vPosition);
@@ -241,19 +296,33 @@ void special(int key, int x, int y){
 }
 
 
+
 int main(int argc, char **argv)
 {
     windowSize = 512;
-    int num_vertices = 3888;
+    int num_vertices = 3924;
     fillEdges(vertices, num_vertices, 1);
     fillColors(colors, num_vertices);
     fillNormals(normals, num_vertices);
+    vec4 eye = {0, .1, .1, 1};
+    vec4 at = {0, 0, 0, 1};
+    vec4 up = {0, 1, 0, 1};
+    model_view_matrix = look_at(eye, at, up);
+    projection = frustum(-1, 1, -1, 1, -1, -10);
+
+    // float eye_x, eye_y, eye_z;
+    // float at_x, at_y, at_z;
+    // float light_x, light_y, light_z;
+    // printf("Please enter an eye point: ");
+    // scanf("(%f,%f,%f)", &eye_x, &eye_y, &eye_z);
+
+
     ctm = translate(0, 0, 0);
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
     glutInitWindowSize(windowSize, windowSize);
-    glutInitWindowPosition(200,200);
+    glutInitWindowPosition(50,500);
     glutCreateWindow("SPHERE");
     //glewInit();
     init();

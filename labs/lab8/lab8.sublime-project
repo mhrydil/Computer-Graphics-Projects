@@ -3,6 +3,9 @@
 	[
 		{
 			"path": "."
+		},
+		{
+			"path": "/Users/matthewhrydil/Pitt/CurrentClasses/CS1566_ComputerGraphics/common"
 		}
 	]
 }
