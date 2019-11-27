@@ -5,6 +5,7 @@
 
 # This file...
 *.DS_Store
+.DS_Store
 
 # Compiled source #
 ###################
