@@ -71,6 +71,17 @@ vec4 vecNorm(vec4 vec){ //takes a vec4(vec), returns a normalized vector of vec
 	return result;
 
 }
+
+vec4 product(vec4 u, vec4 v)
+{
+    vec4 result;
+    result.x = u.x * v.x;
+    result.y = u.y * v.y;
+    result.z = u.z * v.z;
+    result.w = u.w * v.w;
+    return result;
+}
+
 //Beginning of Matrix Operations
 
 

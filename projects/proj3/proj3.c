@@ -32,12 +32,24 @@
 
 int num_vertices = 3924;
 vec4 vertices[3924];
+vec4 normals[3924];
 vec4 colors[3924];
 
 GLuint ctm_location;
 GLuint projection_location;
 GLuint model_view_location;
+GLuint LightPosition_location;
+// GLuint EyePosition_location;
+GLuint ap_location;
+GLuint dp_location;
+GLuint sp_location;
+GLuint ac_location;
+GLuint al_location;
+GLuint aq_location;
+GLuint shininess_location;
+GLuint isShadow_location;
 vec4 eye, at, up;
+vec4 AmbientProduct, DiffuseProduct, SpecularProduct;
 int currDegree = -30; // used to stop the rotation about the x-axis from happening when it is at either bound
 int isAnimating = 0;
 mat4 ctm = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}};
@@ -54,12 +66,53 @@ mat4 light_ctm = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.
 mat4 table_ctm = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}};
 int windowSize;
 
+// Lighting
+
+vec4 light_diffuse = {1.0, 1.0, 1.0, 1.0};
+vec4 light_specular = {1.0, 1.0, 1.0, 1.0};
+vec4 light_ambient = {0.5, 0.5, 0.5, 1.0};
+vec4 LightPosition = {0.0, 3.0, 0.0, 1.0};
+
+GLfloat att_const = .025;
+GLfloat att_linear = 0;
+GLfloat att_quad = 0;
+
+
+typedef enum material_name
+{
+    RED_BALL,
+    GREEN_BALL,
+    BLUE_BALL,
+    YELLOW_BALL,
+    ORANGE_BALL,
+    LIGHT,
+    TABLE,
+    NUM_MATERIALS
+} material_name;
+
+typedef struct
+{
+    vec4 reflect_ambient;
+    vec4 reflect_diffuse;
+    vec4 reflect_specular;
+    GLfloat shininess;
+} material;
+
+material materials[NUM_MATERIALS] = {
+    {{1.0, 0.0, 0.0, 1.0}, {1.0, 0.0, 0.0, 1.0}, {1.0, 1.0, 1.0, 1.0}, 1000},
+    {{0.0, 1.0, 0.0, 1.0}, {0.0, 1.0, 0.0, 1.0}, {1.0, 1.0, 1.0, 1.0}, 1000},
+    {{0.0, 0.0, 1.0, 1.0}, {0.0, 0.0, 1.0, 1.0}, {1.0, 1.0, 1.0, 1.0}, 1000},
+    {{1.0, 1.0, 0.0, 1.0}, {1.0, 1.0, 0.0, 1.0}, {1.0, 1.0, 1.0, 1.0}, 1000},
+    {{1.0, 0.5, 0.0, 1.0}, {1.0, 0.5, 0.0, 1.0}, {1.0, 1.0, 1.0, 1.0}, 1000}, 
+    {{1.0, 1.0, 1.0, 1.0}, {1.0, 1.0, 1.0, 1.0}, {1.0, 1.0, 1.0, 1.0}, 1000},
+    {{0.0, 0.5, 0.0, 1.0}, {0.0, 0.5, 0.0, 1.0}, {1.0, 1.0, 1.0, 1.0}, 1000}
+};
+
 
 
 
 void fillEdges(vec4* vert, int numVertices, float t){
     
-    GLfloat nextYCoord;
     GLfloat theta;
     GLfloat phi;
     GLfloat theta2;
@@ -126,24 +179,42 @@ void fillEdges(vec4* vert, int numVertices, float t){
     }
 }
 
+// fills the normals array with the normal vector for each vertex
+void fillNormals(vec4* normals, int size){
+    for(int i=0; i<size/3; i++){
+        vec4 first = vertices[i*3];
+        vec4 second = vertices[i*3+1];
+        vec4 third = vertices[i*3+2];
 
-//fills the triangles with random colors.
-void fillColors(vec4* colors, int size){
-
-    for(int i=0; i<36; i++){
-        colors[3888 + i] = (vec4){0, .3, 0, 1};
-    }
-    for(int i=0; i<3888; i++){
-        colors[i] = (vec4){.25, 0, .25, 1};
+        vec4 v1 = vecSub(second, first);
+        vec4 v2 = vecSub(third, second);
+        vec4 cross = vecCross(v1, v2);
+        vec4 norm = vecScalar(1/getMagnitude(cross), cross);
+        normals[i*3] = norm;
+        normals[i*3+1] = norm;
+        normals[i*3+2] = norm;
     }
 }
+
+
+//fills the triangles with random colors.
+// void fillColors(vec4* colors, int size){
+
+//     for(int i=0; i<36; i++){
+//         colors[3888 + i] = (vec4){0, .3, 0, 1};
+//     }
+//     for(int i=0; i<3888; i++){
+//         colors[i] = (vec4){.25, 0, .25, 1};
+//     }
+// }
 
 
 void init(void)
 {
 
     fillEdges(vertices, num_vertices, 1);
-    fillColors(colors, num_vertices);
+    fillNormals(normals, num_vertices);
+    // fillColors(colors, num_vertices);
     red_ctm = matMult(scale(.5, .5, .5), red_ctm);
     red_ctm = matMult(translate(0, .5, 0), red_ctm);
     green_ctm = matMult(scale(.5, .5, .5), green_ctm);
@@ -170,6 +241,17 @@ void init(void)
     ctm_location = glGetUniformLocation(program, "ctm");
     projection_location = glGetUniformLocation(program, "projection");
     model_view_location = glGetUniformLocation(program, "model_view");
+    isShadow_location = glGetUniformLocation(program, "isShadow");
+    ap_location = glGetUniformLocation(program, "AmbientProduct");
+    dp_location = glGetUniformLocation(program, "DiffuseProduct");
+    sp_location = glGetUniformLocation(program, "SpecularProduct");
+    shininess_location = glGetUniformLocation(program, "shininess");
+    LightPosition_location = glGetUniformLocation(program, "LightPosition");
+    // EyePosition_location = glGetUniformLocation(program, "EyePosition");
+    ac_location = glGetUniformLocation(program, "attenuation_constant");
+    al_location = glGetUniformLocation(program, "attenuation_linear");
+    aq_location = glGetUniformLocation(program, "attenuation_quadratic");
+
 
     GLuint vao;
     glGenVertexArrays(1, &vao);
@@ -178,17 +260,17 @@ void init(void)
     GLuint buffer;
     glGenBuffers(1, &buffer);
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) + sizeof(colors), NULL, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) + sizeof(normals), NULL, GL_STATIC_DRAW);
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-    glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices), sizeof(colors), colors);
+    glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices), sizeof(normals), normals);
 
     GLuint vPosition = glGetAttribLocation(program, "vPosition");
     glEnableVertexAttribArray(vPosition);
     glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
 
-    GLuint vColor = glGetAttribLocation(program, "vColor");
-    glEnableVertexAttribArray(vColor);
-    glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0, (GLvoid *) sizeof(vertices));
+    GLuint vNormal = glGetAttribLocation(program, "vNormal");
+    glEnableVertexAttribArray(vNormal);
+    glVertexAttribPointer(vNormal, 4, GL_FLOAT, GL_FALSE, 0, (GLvoid *) sizeof(vertices));
 
     glEnable(GL_DEPTH_TEST);
     glClearColor(0.0, 0.0, 0.0, 1.0);
@@ -200,31 +282,128 @@ void display(void)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     
-
-    glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &red_ctm);
-    glDrawArrays(GL_TRIANGLES, 0, 3888);
     
-    glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &green_ctm);
-    glDrawArrays(GL_TRIANGLES, 0, 3888);
 
-    glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &blue_ctm);
-    glDrawArrays(GL_TRIANGLES, 0, 3888);
+    for(int i=0; i<NUM_MATERIALS; i++){
+        glUniform1fv(ac_location, 1, (GLfloat *) &att_const);
+        glUniform1fv(al_location, 1, (GLfloat *) &att_linear);
+        glUniform1fv(aq_location, 1, (GLfloat *) &att_quad);
+        AmbientProduct = product(materials[i].reflect_ambient, light_ambient);
+        DiffuseProduct = product(materials[i].reflect_diffuse, light_diffuse);
+        SpecularProduct = product(materials[i].reflect_specular, light_specular);
+        glUniform4fv(ap_location, 1, (GLfloat *) &AmbientProduct);
+        glUniform4fv(dp_location, 1, (GLfloat *) &DiffuseProduct);
+        glUniform4fv(sp_location, 1, (GLfloat *) &SpecularProduct);
+        glUniform1fv(shininess_location, 1, (GLfloat *) &materials[i].shininess);
+        // glUniform4fv(EyePosition_location, 1, (GLfloat *) &eye);
+        glUniform4fv(LightPosition_location, 1, (GLfloat *) &LightPosition);
+        switch(i){
+            case RED_BALL:
+                glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &red_ctm);
+                glDrawArrays(GL_TRIANGLES, 0, 3888);
+                break;
+            case GREEN_BALL:
+                glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &green_ctm);
+                glDrawArrays(GL_TRIANGLES, 0, 3888);
+                break;
+            case BLUE_BALL:
+                glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &blue_ctm);
+                glDrawArrays(GL_TRIANGLES, 0, 3888);
+                break;
+            case YELLOW_BALL:
+                glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &yellow_ctm);
+                glDrawArrays(GL_TRIANGLES, 0, 3888);
+                break;
+            case ORANGE_BALL:
+                glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &orange_ctm);
+                glDrawArrays(GL_TRIANGLES, 0, 3888);
+                break;
+            case LIGHT:
+                glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &light_ctm);
+                glDrawArrays(GL_TRIANGLES, 0, 3888);
+                break;
+            case TABLE:
+                glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &ctm);
+                glDrawArrays(GL_TRIANGLES, 3888, 36);
+                break;
+        }
+        
+    }
+    
 
-    glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &yellow_ctm);
-    glDrawArrays(GL_TRIANGLES, 0, 3888);
+    // AmbientProduct = product(materials[GREEN_BALL].reflect_ambient, light_ambient);
+    // DiffuseProduct = product(materials[GREEN_BALL].reflect_diffuse, light_diffuse);
+    // SpecularProduct = product(materials[GREEN_BALL].reflect_specular, light_specular);
+    // glUniform4fv(ap_location, 1, (GLfloat *) &AmbientProduct);
+    // glUniform4fv(dp_location, 1, (GLfloat *) &DiffuseProduct);
+    // glUniform4fv(sp_location, 1, (GLfloat *) &SpecularProduct);
+    // glUniform1fv(shininess_location, 1, (GLfloat *) &materials[GREEN_BALL].shininess);
+    // glUniform4fv(EyePosition_location, 1, (GLfloat *) &eye);
+    // glUniform4fv(LightPosition_location, 1, (GLfloat *) &LightPosition);
+    // glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &green_ctm);
+    // glDrawArrays(GL_TRIANGLES, 0, 3888);
 
-    glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &orange_ctm);
-    glDrawArrays(GL_TRIANGLES, 0, 3888);
+    // AmbientProduct = product(materials[BLUE_BALL].reflect_ambient, light_ambient);
+    // DiffuseProduct = product(materials[BLUE_BALL].reflect_diffuse, light_diffuse);
+    // SpecularProduct = product(materials[BLUE_BALL].reflect_specular, light_specular);
+    // glUniform4fv(ap_location, 1, (GLfloat *) &AmbientProduct);
+    // glUniform4fv(dp_location, 1, (GLfloat *) &DiffuseProduct);
+    // glUniform4fv(sp_location, 1, (GLfloat *) &SpecularProduct);
+    // glUniform1fv(shininess_location, 1, (GLfloat *) &materials[BLUE_BALL].shininess);
+    // glUniform4fv(EyePosition_location, 1, (GLfloat *) &eye);
+    // glUniform4fv(LightPosition_location, 1, (GLfloat *) &LightPosition);
+    // glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &blue_ctm);
+    // glDrawArrays(GL_TRIANGLES, 0, 3888);
 
-    glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &light_ctm);
-    glDrawArrays(GL_TRIANGLES, 0, 3888);
+    // AmbientProduct = product(materials[YELLOW_BALL].reflect_ambient, light_ambient);
+    // DiffuseProduct = product(materials[YELLOW_BALL].reflect_diffuse, light_diffuse);
+    // SpecularProduct = product(materials[YELLOW_BALL].reflect_specular, light_specular);
+    // glUniform4fv(ap_location, 1, (GLfloat *) &AmbientProduct);
+    // glUniform4fv(dp_location, 1, (GLfloat *) &DiffuseProduct);
+    // glUniform4fv(sp_location, 1, (GLfloat *) &SpecularProduct);
+    // glUniform1fv(shininess_location, 1, (GLfloat *) &materials[YELLOW_BALL].shininess);
+    // glUniform4fv(EyePosition_location, 1, (GLfloat *) &eye);
+    // glUniform4fv(LightPosition_location, 1, (GLfloat *) &LightPosition);
+    // glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &yellow_ctm);
+    // glDrawArrays(GL_TRIANGLES, 0, 3888);
 
-    glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &ctm); //Arguments (from first to last)
-                                                                    // The location (in GLuint) from the glGetUniformLocation() function
-                                                                    // The number of elements (1 matrix in this case)
-                                                                    // Transpose (no transpose in this case)
-                                                                    // Pointer to the matrix
-    glDrawArrays(GL_TRIANGLES, 3888, 3924);
+    // AmbientProduct = product(materials[ORANGE_BALL].reflect_ambient, light_ambient);
+    // DiffuseProduct = product(materials[ORANGE_BALL].reflect_diffuse, light_diffuse);
+    // SpecularProduct = product(materials[ORANGE_BALL].reflect_specular, light_specular);
+    // glUniform4fv(ap_location, 1, (GLfloat *) &AmbientProduct);
+    // glUniform4fv(dp_location, 1, (GLfloat *) &DiffuseProduct);
+    // glUniform4fv(sp_location, 1, (GLfloat *) &SpecularProduct);
+    // glUniform1fv(shininess_location, 1, (GLfloat *) &materials[ORANGE_BALL].shininess);
+    // glUniform4fv(EyePosition_location, 1, (GLfloat *) &eye);
+    // glUniform4fv(LightPosition_location, 1, (GLfloat *) &LightPosition);
+    // glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &orange_ctm);
+    // glDrawArrays(GL_TRIANGLES, 0, 3888);
+
+    // AmbientProduct = product(materials[LIGHT].reflect_ambient, light_ambient);
+    // DiffuseProduct = product(materials[LIGHT].reflect_diffuse, light_diffuse);
+    // SpecularProduct = product(materials[LIGHT].reflect_specular, light_specular);
+    // glUniform4fv(ap_location, 1, (GLfloat *) &AmbientProduct);
+    // glUniform4fv(dp_location, 1, (GLfloat *) &DiffuseProduct);
+    // glUniform4fv(sp_location, 1, (GLfloat *) &SpecularProduct);
+    // glUniform1fv(shininess_location, 1, (GLfloat *) &materials[LIGHT].shininess);
+    // glUniform4fv(EyePosition_location, 1, (GLfloat *) &eye);
+    // glUniform4fv(LightPosition_location, 1, (GLfloat *) &LightPosition);
+    // glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &light_ctm);
+    // glDrawArrays(GL_TRIANGLES, 0, 3888);
+
+
+    // AmbientProduct = product(materials[TABLE].reflect_ambient, light_ambient);
+    // DiffuseProduct = product(materials[TABLE].reflect_diffuse, light_diffuse);
+    // SpecularProduct = product(materials[TABLE].reflect_specular, light_specular);
+    // glUniform4fv(ap_location, 1, (GLfloat *) &AmbientProduct);
+    // glUniform4fv(dp_location, 1, (GLfloat *) &DiffuseProduct);
+    // glUniform4fv(sp_location, 1, (GLfloat *) &SpecularProduct);
+    // glUniform1fv(shininess_location, 1, (GLfloat *) &materials[TABLE].shininess);
+    // glUniform4fv(EyePosition_location, 1, (GLfloat *) &eye);
+    // glUniform4fv(LightPosition_location, 1, (GLfloat *) &LightPosition);
+    // glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &ctm);
+    // glDrawArrays(GL_TRIANGLES, 3888, 36);
+
 
     glUniformMatrix4fv(projection_location, 1, GL_FALSE, (GLfloat *) &projection);
     glUniformMatrix4fv(model_view_location, 1, GL_FALSE, (GLfloat *) &model_view);
@@ -250,32 +429,38 @@ void keyboard(unsigned char key, int mousex, int mousey)
             break;
         case 'u':
             light_ctm = matMult(translate(0, 1, 0), light_ctm);
+            LightPosition.y += 1;
             glutPostRedisplay();
             break;
         case 'd':
             light_ctm = matMult(translate(0, -1, 0), light_ctm);
+            LightPosition.y -= 1;
             glutPostRedisplay();
             break;
         case 'l':
             light_ctm = matMult(translate(-1, 0, 0), light_ctm);
+            LightPosition.x -= 1;
             glutPostRedisplay();
             break;
         case 'r':
             light_ctm = matMult(translate(1, 0, 0), light_ctm);
+            LightPosition.x += 1;
             glutPostRedisplay();
             break;
         case 'f':
             light_ctm = matMult(translate(0, 0, 1), light_ctm);
+            LightPosition.z += 1;
             glutPostRedisplay();
             break;
         case 'b':
             light_ctm = matMult(translate(0, 0, -1), light_ctm);
+            LightPosition.z -= 1;
             glutPostRedisplay();
             break;
-
     }
 
-    // glutPostRedisplay();
+    printVec(LightPosition);
+    //glutPostRedisplay();
 }
 
 
@@ -289,10 +474,10 @@ void motion(int x, int y){
 
 void special(int key, int x, int y){
 	switch(key){
-        case 100:
-            eye = matVec(rotate_y(-5), eye);
-            model_view = look_at(eye, at, up);
-            break;
+        // case 100:
+        //     eye = matVec(rotate_y(-5), eye);
+        //     model_view = look_at(eye, at, up);
+        //     break;
 		case 101:
             if(currDegree != -85){
                 eye = matVec(rotate_x(-5), eye);
@@ -300,10 +485,10 @@ void special(int key, int x, int y){
                 currDegree -= 5;
             }
             break;
-        case 102:
-            eye = matVec(rotate_y(5), eye);
-            model_view = look_at(eye, at, up);
-            break;
+        // case 102:
+        //     eye = matVec(rotate_y(5), eye);
+        //     model_view = look_at(eye, at, up);
+        //     break;
 		case 103:
             if(currDegree != 0){
                 eye = matVec(rotate_x(5), eye);

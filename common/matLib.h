@@ -31,6 +31,7 @@ GLfloat vecDot(vec4 v1, vec4 v2); //takes 2 vec4s(v1 and v2), returns a GLfloat 
 vec4 vecCross(vec4 v1, vec4 v2); //takes 2 vec4s(v1 and v2), returns a vec4(v1xv2)
 GLfloat vecMag(vec4 vec); //takes a vec4(vec), returns the magnitude of vec
 vec4 vecNorm(vec4 vec); //takes a vec4(vec), returns a normalized vector of vec
+vec4 product(vec4 u, vec4 v); //calculates product of u.x & v.x, u.y & v.y, etc...
 
 
 //Matrix functions
