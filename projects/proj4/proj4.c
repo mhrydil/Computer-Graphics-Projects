@@ -38,6 +38,12 @@ GLuint ctm_location;
 GLuint cubie_ctm_location;
 mat4 ctm = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}};
 mat4 identity = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}};
+int front[9] = {0, 1, 2, 3, 4, 5, 6, 7, 8};
+int right[9] = {2, 11, 20, 5, 14, 23, 8, 17, 26};
+int back[9] = {20, 19, 18, 23, 22, 21, 26, 25, 24};
+int left[9] = {18, 9, 0, 21, 12, 3, 24, 15, 6};
+int up[9] = {18, 19, 20, 9, 10, 11, 0, 1, 2};
+int down[9] = {6, 7, 8, 15, 16, 17, 24, 25, 26};
 mat4 cubies[27];
 int windowSize;
 int spinning = 0;
@@ -197,6 +203,69 @@ void display(void)
                                                                     // Pointer to the matrix
 
     for(int i=0; i<NUM_CUBIES; i++){
+    	if(i<9){ // front face
+			for(int i=0; i<6; i++){
+				colors[i] = (vec4){0, .5, 0, 1};
+			}
+		}
+		else{
+			for(int i=0; i<6; i++){
+				colors[i] = (vec4){0, 0, 0, 1};
+			}
+		}
+		if(i>=18){ // back face
+			for(int i=0; i<6; i++){
+				colors[48+i] = (vec4){0, 0, 1, 1};
+			}
+		}
+		else{
+			for(int i=0; i<6; i++){
+				colors[48+i] = (vec4){0, 0, 0, 1};
+			}
+		}
+		// Y-Placement
+		if(i%9 == 0 || i%9 == 1 || i%9 == 2){ // top face
+			for(int i=0; i<6; i++){
+				colors[120+i] = (vec4){1, 1, 1, 1};
+			}
+		}
+		else{
+			for(int i=0; i<6; i++){
+				colors[120+i] = (vec4){0, 0, 0, 1};
+			}
+		}
+		if(i%9 == 6 || i%9 == 7 || i%9 == 8){ // bottom face
+			for(int i=0; i<6; i++){
+				colors[96+i] = (vec4){1, 1, 0, 1};
+			}
+		}
+		else{
+			for(int i=0; i<6; i++){
+				colors[96+i] = (vec4){0, 0, 0, 1};
+			}
+		}
+		// X-Placement
+		if(i%9 == 0 || i%9 == 3 || i%9 == 6){ // left face
+			for(int i=0; i<6; i++){
+				colors[72+i] = (vec4){1, .35, 0, 1};
+			}
+		}
+		else{
+			for(int i=0; i<6; i++){
+				colors[72+i] = (vec4){0, 0, 0, 1};
+			}
+		}
+		if(i%9 == 2 || i%9 == 5 || i%9 == 8){ // right face
+			for(int i=0; i<6; i++){
+				colors[24+i] = (vec4){.6, 0, 0, 1};
+			}
+		}
+		else{
+			for(int i=0; i<6; i++){
+				colors[24+i] = (vec4){0, 0, 0, 1};
+			}
+		}
+		glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices), sizeof(colors), colors);
     	glUniformMatrix4fv(cubie_ctm_location, 1, GL_FALSE, (GLfloat *) &cubies[i]);
     	glDrawArrays(GL_TRIANGLES, 0, num_vertices);
     }
@@ -212,6 +281,189 @@ void keyboard(unsigned char key, int mousex, int mousey)
 {
     if(key == 'q')
     	exit(0);
+    if(key == 'f'){
+    	int temp[9];
+    	for(int i=0; i<9; i++){
+    		temp[i] = front[i];
+    	}
+    	front[0] = temp[6];
+    	front[1] = temp[3];
+    	front[2] = temp[0];
+    	front[3] = temp[7];
+    	front[4] = temp[4];
+    	front[5] = temp[1];
+    	front[6] = temp[8];
+    	front[7] = temp[5];
+    	front[8] = temp[2];
+    	right[0] = front[2];
+    	right[3] = front[5];
+    	right[6] = front[8];
+    	up[6] = front[0];
+    	up[7] = front[1];
+    	up[8] = front[2];
+    	left[2] = front[0];
+    	left[5] = front[3];
+    	left[8] = front[6];
+    	down[0] = front[6];
+    	down[1] = front[7];
+    	down[2] = front[8];
+    	for(int i = 0; i<9; i++){
+    		cubies[front[i]] = matMult(rotate_z(-90), cubies[front[i]]);
+    	}
+    }
+    if(key == 'r'){
+    	int temp[9];
+    	for(int i=0; i<9; i++){
+    		temp[i] = right[i];
+    	}
+    	right[0] = temp[6];
+    	right[1] = temp[3];
+    	right[2] = temp[0];
+    	right[3] = temp[7];
+    	right[4] = temp[4];
+    	right[5] = temp[1];
+    	right[6] = temp[8];
+    	right[7] = temp[5];
+    	right[8] = temp[2];
+    	back[0] = right[2];
+    	back[3] = right[5];
+    	back[6] = right[8];
+    	up[2] = right[2];
+    	up[5] = right[1];
+    	up[8] = right[0];
+    	front[2] = right[0];
+    	front[5] = right[3];
+    	front[8] = right[6];
+    	down[2] = right[6];
+    	down[5] = right[7];
+    	down[8] = right[8];
+    	for(int i = 0; i<9; i++){
+    		cubies[right[i]] = matMult(rotate_x(-90), cubies[right[i]]);
+    	}
+    }
+    if(key == 'u'){
+    	int temp[9];
+    	for(int i=0; i<9; i++){
+    		temp[i] = up[i];
+    	}
+    	up[0] = temp[6];
+    	up[1] = temp[3];
+    	up[2] = temp[0];
+    	up[3] = temp[7];
+    	up[4] = temp[4];
+    	up[5] = temp[1];
+    	up[6] = temp[8];
+    	up[7] = temp[5];
+    	up[8] = temp[2];
+    	right[0] = up[8];
+    	right[1] = up[5];
+    	right[2] = up[2];
+    	back[0] = up[2];
+    	back[1] = up[1];
+    	back[2] = up[0];
+    	left[0] = up[0];
+    	left[1] = up[3];
+    	left[2] = up[6];
+    	front[0] = up[6];
+    	front[1] = up[7];
+    	front[2] = up[8];
+    	for(int i = 0; i<9; i++){
+    		cubies[up[i]] = matMult(rotate_y(-90), cubies[up[i]]);
+    	}
+    }
+    if(key == 'l'){
+    	int temp[9];
+    	for(int i=0; i<9; i++){
+    		temp[i] = left[i];
+    	}
+    	left[0] = temp[6];
+    	left[1] = temp[3];
+    	left[2] = temp[0];
+    	left[3] = temp[7];
+    	left[4] = temp[4];
+    	left[5] = temp[1];
+    	left[6] = temp[8];
+    	left[7] = temp[5];
+    	left[8] = temp[2];
+    	up[0] = left[0];
+    	up[3] = left[1];
+    	up[6] = left[2];
+    	front[0] = left[2];
+    	front[3] = left[5];
+    	front[6] = left[8];
+    	down[6] = left[6];
+    	down[3] = left[7];
+    	down[0] = left[8];
+    	back[2] = left[0];
+    	back[5] = left[3];
+    	back[8] = left[6];
+    	for(int i = 0; i<9; i++){
+    		cubies[left[i]] = matMult(rotate_x(90), cubies[left[i]]);
+    	}
+    }
+    if(key == 'b'){
+    	int temp[9];
+    	for(int i=0; i<9; i++){
+    		temp[i] = back[i];
+    	}
+    	back[0] = temp[6];
+    	back[1] = temp[3];
+    	back[2] = temp[0];
+    	back[3] = temp[7];
+    	back[4] = temp[4];
+    	back[5] = temp[1];
+    	back[6] = temp[8];
+    	back[7] = temp[5];
+    	back[8] = temp[2];
+    	up[2] = back[0];
+    	up[1] = back[1];
+    	up[0] = back[2];
+    	left[0] = back[2];
+    	left[3] = back[5];
+    	left[6] = back[8];
+    	down[6] = back[8];
+    	down[7] = back[7];
+    	down[8] = back[6];
+    	right[2] = back[0];
+    	right[5] = back[3];
+    	right[8] = back[6];
+    	for(int i = 0; i<9; i++){
+    		cubies[back[i]] = matMult(rotate_z(90), cubies[back[i]]);
+    	}
+    }
+    if(key == 'd'){
+    	int temp[9];
+    	for(int i=0; i<9; i++){
+    		temp[i] = down[i];
+    	}
+    	down[0] = temp[6];
+    	down[1] = temp[3];
+    	down[2] = temp[0];
+    	down[3] = temp[7];
+    	down[4] = temp[4];
+    	down[5] = temp[1];
+    	down[6] = temp[8];
+    	down[7] = temp[5];
+    	down[8] = temp[2];
+    	front[6] = down[0];
+    	front[7] = down[1];
+    	front[8] = down[2];
+    	right[6] = down[2];
+    	right[7] = down[5];
+    	right[8] = down[8];
+    	back[6] = down[8];
+    	back[7] = down[7];
+    	back[8] = down[6];
+    	left[6] = down[6];
+    	left[7] = down[3];
+    	left[8] = down[0];
+    	for(int i = 0; i<9; i++){
+    		cubies[down[i]] = matMult(rotate_y(90), cubies[down[i]]);
+    	}
+    }
+
+
+
 
     glutPostRedisplay();
 }
@@ -281,7 +533,7 @@ int main(int argc, char **argv)
     windowSize = 512;
     int num_vertices = 144;
     fillEdges(vertices, num_vertices, 1);
-    fillColors(colors, num_vertices);
+    // fillColors(colors, num_vertices);
     ctm = translate(0, 0, 0);
 
     glutInit(&argc, argv);
