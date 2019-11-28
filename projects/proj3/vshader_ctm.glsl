@@ -19,7 +19,7 @@ void main()
 {
 	ambient = AmbientProduct;
 	vec4 N = normalize(projection * model_view * ctm * vNormal);
-	vec4 L_temp = LightPosition - (projection * model_view * ctm * vPosition);
+	vec4 L_temp = projection * model_view * ctm * (LightPosition - vPosition);
 	vec4 L = normalize(L_temp);
 	diffuse = max(dot(L,N), 0.0) * DiffuseProduct;
 	vec4 EyePosition = vec4(0, 0, 0, 1);
