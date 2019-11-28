@@ -26,16 +26,19 @@
 #include "../../common/matLib.h"
 #include <stdio.h>
 #include <time.h>
-//#include "lab3.h"
 
 #define BUFFER_OFFSET( offset )   ((GLvoid*) (offset))
 
 int num_vertices = 144;
+int NUM_CUBIES = 27;
 vec4 vertices[144];
 vec4 colors[144];
 
 GLuint ctm_location;
+GLuint cubie_ctm_location;
 mat4 ctm = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}};
+mat4 identity = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}};
+mat4 cubies[27];
 int windowSize;
 int spinning = 0;
 
@@ -71,7 +74,7 @@ void fillEdges(vec4* vert, int numVertices, float t){
     vert[18] = (vec4){.5, .5, .6, 1};
     vert[19] = (vec4){.6, .5, .5, 1};
     vert[20] = (vec4){.5, .6, .5, 1};
-    // builds the bottom left triangular angled part
+    // builds the bottom right triangular angled part
     vert[21] = (vec4){.5, -.6, .5, 1};
     vert[22] = (vec4){.6, -.5, .5, 1};
     vert[23] = (vec4){.5, -.5, .6, 1};
@@ -94,8 +97,6 @@ void fillEdges(vec4* vert, int numVertices, float t){
     for(int i=0; i<18; i++){ // rotate just the bottom edges about y 180 degrees
         vert[126 + i] = matVec(rotate_y(180), vert[102+i]);
     }
-
-
 }
 
 
@@ -120,7 +121,7 @@ void fillColors(vec4* colors, int size){
 
     for(int i=0; i<size; i++){
         if(i%24 >= 6){
-            colors[i] = (vec4){0.2, 0.2, 0.2, 1};
+            colors[i] = (vec4){0.1, 0.1, 0.1, 1};
         }
     }
 }
@@ -128,10 +129,38 @@ void fillColors(vec4* colors, int size){
 
 void init(void)
 {
+
+	for(int i=0; i<NUM_CUBIES; i++){
+		cubies[i] = identity;
+		cubies[i] = matMult(scale(.333, .333, .333), cubies[i]);
+		// Z-Placement
+		if(i<9){
+			cubies[i] = matMult(translate(0, 0, .405), cubies[i]);
+		}
+		if(i>=18){
+			cubies[i] = matMult(translate(0, 0, -.405), cubies[i]);
+		}
+		// Y-Placement
+		if(i%9 == 0 || i%9 == 1 || i%9 == 2){
+			cubies[i] = matMult(translate(0, .405, 0), cubies[i]);
+		}
+		if(i%9 == 6 || i%9 == 7 || i%9 == 8){
+			cubies[i] = matMult(translate(0, -.405, 0), cubies[i]);
+		}
+		// X-Placement
+		if(i%9 == 0 || i%9 == 3 || i%9 == 6){
+			cubies[i] = matMult(translate(-.405, 0, 0), cubies[i]);
+		}
+		if(i%9 == 2 || i%9 == 5 || i%9 == 8){
+			cubies[i] = matMult(translate(.405, 0, 0), cubies[i]);
+		}
+
+	}
     GLuint program = initShader("vshader_ctm.glsl", "fshader.glsl");
     glUseProgram(program);
 
     ctm_location = glGetUniformLocation(program, "ctm");
+    cubie_ctm_location = glGetUniformLocation(program, "cubie_ctm");
 
     GLuint vao;
     glGenVertexArrays(1, &vao);
@@ -153,7 +182,7 @@ void init(void)
     glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0, (GLvoid *) sizeof(vertices));
 
     glEnable(GL_DEPTH_TEST);
-    glClearColor(0.0, 0.0, 0.0, 1.0);
+    glClearColor(1.0, 1.0, 1.0, 1.0);
     glDepthRange(1,0);
 }
 
@@ -166,6 +195,11 @@ void display(void)
                                                                     // The number of elements (1 matrix in this case)
                                                                     // Transpose (no transpose in this case)
                                                                     // Pointer to the matrix
+
+    for(int i=0; i<NUM_CUBIES; i++){
+    	glUniformMatrix4fv(cubie_ctm_location, 1, GL_FALSE, (GLfloat *) &cubies[i]);
+    	glDrawArrays(GL_TRIANGLES, 0, num_vertices);
+    }
 
     glPolygonMode(GL_FRONT, GL_FILL);
     glPolygonMode(GL_BACK, GL_LINE);
