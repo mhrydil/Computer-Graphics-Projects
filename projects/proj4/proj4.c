@@ -205,7 +205,7 @@ void display(void)
     for(int i=0; i<NUM_CUBIES; i++){
     	if(i<9){ // front face
 			for(int i=0; i<6; i++){
-				colors[i] = (vec4){0, .5, 0, 1};
+				colors[i] = (vec4){0, .25, 0, 1};
 			}
 		}
 		else{
