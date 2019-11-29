@@ -103,6 +103,7 @@ void fillEdges(vec4* vert, int numVertices, float t){
     vert[22] = (vec4){.6, -.5, .5, 1};
     vert[23] = (vec4){.5, -.5, .6, 1};
 
+    //rotate a single face, 2 edges, and 2 corners to complete cubie
     for(int i=0; i<24; i++){ //rotate about y 90 degrees (right wall)
         vert[24 + i] = matVec(rotate_y(90), vert[i]);
     }
@@ -531,7 +532,6 @@ void shuffle(){
 		printf("%c", randomSequence[i]);
 	}
 	printf("\n");
-	currIndex = 0;
 	isShuffling = 1;
 }
 
@@ -756,6 +756,7 @@ void idle(void){
 		}
 		if(currIndex == 30){
 			isShuffling = 0;
+			currIndex = 0;
 		}
 
 	}
