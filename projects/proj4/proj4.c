@@ -22,6 +22,7 @@
 #endif  // __APPLE__
 
 #include "initShader.h"
+#include "solve_rc.h"
 #include <math.h>
 #include "../../common/matLib.h"
 #include <stdio.h>
@@ -46,9 +47,26 @@ int up[9] = {18, 19, 20, 9, 10, 11, 0, 1, 2};
 int down[9] = {6, 7, 8, 15, 16, 17, 24, 25, 26};
 mat4 cubies[27];
 int windowSize;
-int spinning = 0;
-
 vec4 downClick;
+
+// for animation
+int isRotatingFront = 0;
+int currFrontStep = 0;
+int isRotatingRight = 0;
+int currRightStep = 0;
+int isRotatingBack = 0;
+int currBackStep = 0;
+int isRotatingLeft = 0;
+int currLeftStep = 0;
+int isRotatingUp = 0;
+int currUpStep = 0;
+int isRotatingDown = 0;
+int currDownStep = 0;
+int maxSteps = 10;
+
+int isShuffling = 0;
+int currIndex = 0;
+char randomSequence[30];
 
 
 void fillEdges(vec4* vert, int numVertices, float t){
@@ -277,194 +295,290 @@ void display(void)
     glutSwapBuffers();
 }
 
+int sumMoving(){
+	return isRotatingFront + isRotatingRight + isRotatingUp + isRotatingLeft + isRotatingBack + isRotatingDown;
+}
+
+// if no other side is moving
+// 		adjust the location of each cubie
+// 		set the animation flag for rotation of that face to true
+//		return true
+// if another side is moving
+// 		do nothing and return false
+int rotateFront(){
+	if(sumMoving() == 0){
+		int temp[9];
+		for(int i=0; i<9; i++){
+			temp[i] = front[i];
+		}
+		front[0] = temp[6];
+		front[1] = temp[3];
+		front[2] = temp[0];
+		front[3] = temp[7];
+		front[4] = temp[4];
+		front[5] = temp[1];
+		front[6] = temp[8];
+		front[7] = temp[5];
+		front[8] = temp[2];
+		right[0] = front[2];
+		right[3] = front[5];
+		right[6] = front[8];
+		up[6] = front[0];
+		up[7] = front[1];
+		up[8] = front[2];
+		left[2] = front[0];
+		left[5] = front[3];
+		left[8] = front[6];
+		down[0] = front[6];
+		down[1] = front[7];
+		down[2] = front[8];
+		isRotatingFront = 1;
+		return 1;
+	}
+	return 0;
+}
+int rotateRight(){
+	if(sumMoving() == 0){
+		int temp[9];
+		for(int i=0; i<9; i++){
+			temp[i] = right[i];
+		}
+		right[0] = temp[6];
+		right[1] = temp[3];
+		right[2] = temp[0];
+		right[3] = temp[7];
+		right[4] = temp[4];
+		right[5] = temp[1];
+		right[6] = temp[8];
+		right[7] = temp[5];
+		right[8] = temp[2];
+		back[0] = right[2];
+		back[3] = right[5];
+		back[6] = right[8];
+		up[2] = right[2];
+		up[5] = right[1];
+		up[8] = right[0];
+		front[2] = right[0];
+		front[5] = right[3];
+		front[8] = right[6];
+		down[2] = right[6];
+		down[5] = right[7];
+		down[8] = right[8];
+		isRotatingRight = 1;
+		return 1;
+	}
+	return 0;
+}
+int rotateUp(){
+	if(sumMoving() == 0){
+		int temp[9];
+		for(int i=0; i<9; i++){
+			temp[i] = up[i];
+		}
+		up[0] = temp[6];
+		up[1] = temp[3];
+		up[2] = temp[0];
+		up[3] = temp[7];
+		up[4] = temp[4];
+		up[5] = temp[1];
+		up[6] = temp[8];
+		up[7] = temp[5];
+		up[8] = temp[2];
+		right[0] = up[8];
+		right[1] = up[5];
+		right[2] = up[2];
+		back[0] = up[2];
+		back[1] = up[1];
+		back[2] = up[0];
+		left[0] = up[0];
+		left[1] = up[3];
+		left[2] = up[6];
+		front[0] = up[6];
+		front[1] = up[7];
+		front[2] = up[8];
+		isRotatingUp = 1;
+		return 1;
+	}
+	return 0;
+}
+int rotateLeft(){
+	if(sumMoving() == 0){
+		int temp[9];
+		for(int i=0; i<9; i++){
+			temp[i] = left[i];
+		}
+		left[0] = temp[6];
+		left[1] = temp[3];
+		left[2] = temp[0];
+		left[3] = temp[7];
+		left[4] = temp[4];
+		left[5] = temp[1];
+		left[6] = temp[8];
+		left[7] = temp[5];
+		left[8] = temp[2];
+		up[0] = left[0];
+		up[3] = left[1];
+		up[6] = left[2];
+		front[0] = left[2];
+		front[3] = left[5];
+		front[6] = left[8];
+		down[6] = left[6];
+		down[3] = left[7];
+		down[0] = left[8];
+		back[2] = left[0];
+		back[5] = left[3];
+		back[8] = left[6];
+		isRotatingLeft = 1;
+		return 1;
+	}
+	return 0;
+}
+int rotateBack(){
+	if(sumMoving() == 0){
+		int temp[9];
+		for(int i=0; i<9; i++){
+			temp[i] = back[i];
+		}
+		back[0] = temp[6];
+		back[1] = temp[3];
+		back[2] = temp[0];
+		back[3] = temp[7];
+		back[4] = temp[4];
+		back[5] = temp[1];
+		back[6] = temp[8];
+		back[7] = temp[5];
+		back[8] = temp[2];
+		up[2] = back[0];
+		up[1] = back[1];
+		up[0] = back[2];
+		left[0] = back[2];
+		left[3] = back[5];
+		left[6] = back[8];
+		down[6] = back[8];
+		down[7] = back[7];
+		down[8] = back[6];
+		right[2] = back[0];
+		right[5] = back[3];
+		right[8] = back[6];
+		isRotatingBack = 1;
+		return 1;
+	}
+	return 0;
+}
+int rotateDown(){
+	if(sumMoving() == 0){
+		int temp[9];
+		for(int i=0; i<9; i++){
+			temp[i] = down[i];
+		}
+		down[0] = temp[6];
+		down[1] = temp[3];
+		down[2] = temp[0];
+		down[3] = temp[7];
+		down[4] = temp[4];
+		down[5] = temp[1];
+		down[6] = temp[8];
+		down[7] = temp[5];
+		down[8] = temp[2];
+		front[6] = down[0];
+		front[7] = down[1];
+		front[8] = down[2];
+		right[6] = down[2];
+		right[7] = down[5];
+		right[8] = down[8];
+		back[6] = down[8];
+		back[7] = down[7];
+		back[8] = down[6];
+		left[6] = down[6];
+		left[7] = down[3];
+		left[8] = down[0];
+		isRotatingDown = 1;
+		return 1;
+	}
+	return 0;
+}
+
+void generateSequence(){
+	for(int i=0; i<30; i++){
+		int num = rand() % 6;
+		switch(num){
+			case 0:
+				randomSequence[i] = 'f';
+				break;
+			case 1:
+				randomSequence[i] = 'r';
+				break;
+			case 2:
+				randomSequence[i] = 'b';
+				break;
+			case 3:
+				randomSequence[i] = 'l';
+				break;
+			case 4:
+				randomSequence[i] = 'u';
+				break;
+			case 5:
+				randomSequence[i] = 'd';
+				break;
+		}
+	}
+}
+
+void shuffle(){
+	
+	generateSequence();
+	for(int i=0; i<30; i++){
+		printf("%c", randomSequence[i]);
+	}
+	printf("\n");
+	currIndex = 0;
+	isShuffling = 1;
+}
+
+void solve(){
+	char* solution = solve_rc();
+	int currIndex = 0;
+	while(solution[currIndex] != '\0'){
+		printf("%c", solution[currIndex++]);
+	}
+	printf("\n");
+}
+
 void keyboard(unsigned char key, int mousex, int mousey)
 {
     if(key == 'q')
     	exit(0);
+
     if(key == 'f'){
-    	int temp[9];
-    	for(int i=0; i<9; i++){
-    		temp[i] = front[i];
-    	}
-    	front[0] = temp[6];
-    	front[1] = temp[3];
-    	front[2] = temp[0];
-    	front[3] = temp[7];
-    	front[4] = temp[4];
-    	front[5] = temp[1];
-    	front[6] = temp[8];
-    	front[7] = temp[5];
-    	front[8] = temp[2];
-    	right[0] = front[2];
-    	right[3] = front[5];
-    	right[6] = front[8];
-    	up[6] = front[0];
-    	up[7] = front[1];
-    	up[8] = front[2];
-    	left[2] = front[0];
-    	left[5] = front[3];
-    	left[8] = front[6];
-    	down[0] = front[6];
-    	down[1] = front[7];
-    	down[2] = front[8];
-    	for(int i = 0; i<9; i++){
-    		cubies[front[i]] = matMult(rotate_z(-90), cubies[front[i]]);
-    	}
+    	int success = rotateFront();
+    	if(success) r_string_front();
     }
     if(key == 'r'){
-    	int temp[9];
-    	for(int i=0; i<9; i++){
-    		temp[i] = right[i];
-    	}
-    	right[0] = temp[6];
-    	right[1] = temp[3];
-    	right[2] = temp[0];
-    	right[3] = temp[7];
-    	right[4] = temp[4];
-    	right[5] = temp[1];
-    	right[6] = temp[8];
-    	right[7] = temp[5];
-    	right[8] = temp[2];
-    	back[0] = right[2];
-    	back[3] = right[5];
-    	back[6] = right[8];
-    	up[2] = right[2];
-    	up[5] = right[1];
-    	up[8] = right[0];
-    	front[2] = right[0];
-    	front[5] = right[3];
-    	front[8] = right[6];
-    	down[2] = right[6];
-    	down[5] = right[7];
-    	down[8] = right[8];
-    	for(int i = 0; i<9; i++){
-    		cubies[right[i]] = matMult(rotate_x(-90), cubies[right[i]]);
-    	}
+    	int success = rotateRight();
+    	if(success) r_string_right();
     }
     if(key == 'u'){
-    	int temp[9];
-    	for(int i=0; i<9; i++){
-    		temp[i] = up[i];
-    	}
-    	up[0] = temp[6];
-    	up[1] = temp[3];
-    	up[2] = temp[0];
-    	up[3] = temp[7];
-    	up[4] = temp[4];
-    	up[5] = temp[1];
-    	up[6] = temp[8];
-    	up[7] = temp[5];
-    	up[8] = temp[2];
-    	right[0] = up[8];
-    	right[1] = up[5];
-    	right[2] = up[2];
-    	back[0] = up[2];
-    	back[1] = up[1];
-    	back[2] = up[0];
-    	left[0] = up[0];
-    	left[1] = up[3];
-    	left[2] = up[6];
-    	front[0] = up[6];
-    	front[1] = up[7];
-    	front[2] = up[8];
-    	for(int i = 0; i<9; i++){
-    		cubies[up[i]] = matMult(rotate_y(-90), cubies[up[i]]);
-    	}
+    	int success = rotateUp();
+    	if(success) r_string_up();
     }
     if(key == 'l'){
-    	int temp[9];
-    	for(int i=0; i<9; i++){
-    		temp[i] = left[i];
-    	}
-    	left[0] = temp[6];
-    	left[1] = temp[3];
-    	left[2] = temp[0];
-    	left[3] = temp[7];
-    	left[4] = temp[4];
-    	left[5] = temp[1];
-    	left[6] = temp[8];
-    	left[7] = temp[5];
-    	left[8] = temp[2];
-    	up[0] = left[0];
-    	up[3] = left[1];
-    	up[6] = left[2];
-    	front[0] = left[2];
-    	front[3] = left[5];
-    	front[6] = left[8];
-    	down[6] = left[6];
-    	down[3] = left[7];
-    	down[0] = left[8];
-    	back[2] = left[0];
-    	back[5] = left[3];
-    	back[8] = left[6];
-    	for(int i = 0; i<9; i++){
-    		cubies[left[i]] = matMult(rotate_x(90), cubies[left[i]]);
-    	}
+    	int success = rotateLeft();
+    	if(success) r_string_left();
     }
     if(key == 'b'){
-    	int temp[9];
-    	for(int i=0; i<9; i++){
-    		temp[i] = back[i];
-    	}
-    	back[0] = temp[6];
-    	back[1] = temp[3];
-    	back[2] = temp[0];
-    	back[3] = temp[7];
-    	back[4] = temp[4];
-    	back[5] = temp[1];
-    	back[6] = temp[8];
-    	back[7] = temp[5];
-    	back[8] = temp[2];
-    	up[2] = back[0];
-    	up[1] = back[1];
-    	up[0] = back[2];
-    	left[0] = back[2];
-    	left[3] = back[5];
-    	left[6] = back[8];
-    	down[6] = back[8];
-    	down[7] = back[7];
-    	down[8] = back[6];
-    	right[2] = back[0];
-    	right[5] = back[3];
-    	right[8] = back[6];
-    	for(int i = 0; i<9; i++){
-    		cubies[back[i]] = matMult(rotate_z(90), cubies[back[i]]);
-    	}
+    	int success = rotateBack();
+    	if(success) r_string_back();
     }
     if(key == 'd'){
-    	int temp[9];
-    	for(int i=0; i<9; i++){
-    		temp[i] = down[i];
-    	}
-    	down[0] = temp[6];
-    	down[1] = temp[3];
-    	down[2] = temp[0];
-    	down[3] = temp[7];
-    	down[4] = temp[4];
-    	down[5] = temp[1];
-    	down[6] = temp[8];
-    	down[7] = temp[5];
-    	down[8] = temp[2];
-    	front[6] = down[0];
-    	front[7] = down[1];
-    	front[8] = down[2];
-    	right[6] = down[2];
-    	right[7] = down[5];
-    	right[8] = down[8];
-    	back[6] = down[8];
-    	back[7] = down[7];
-    	back[8] = down[6];
-    	left[6] = down[6];
-    	left[7] = down[3];
-    	left[8] = down[0];
-    	for(int i = 0; i<9; i++){
-    		cubies[down[i]] = matMult(rotate_y(90), cubies[down[i]]);
-    	}
+    	int success = rotateDown();
+    	if(success) r_string_down();
     }
-
-
-
-
+    if(key == 's'){
+    	shuffle();
+    }
+    if(key == ' '){
+    	solve();
+    }
     glutPostRedisplay();
 }
 
@@ -500,7 +614,6 @@ void mouse(int button, int state, int x, int y){
 }
 
 void motion(int x, int y){
-    spinning = 0;
     vec4 origin = {0, 0, 0, 1};
 
     vec4 tail = vecSub(downClick, origin);
@@ -527,14 +640,135 @@ void special(int key, int x, int y){
 	glutPostRedisplay();	
 }
 
+// used for animation
+void idle(void){
+	if(isRotatingFront){
+		for(int i = 0; i<9; i++){
+			cubies[front[i]] = matMult(rotate_z(-90/maxSteps), cubies[front[i]]);
+		}
+		currFrontStep++;
+		if(currFrontStep == maxSteps){
+			isRotatingFront = 0;
+			currFrontStep = 0;
+		}
+	}
+
+	if(isRotatingRight){
+		for(int i = 0; i<9; i++){
+			cubies[right[i]] = matMult(rotate_x(-90/maxSteps), cubies[right[i]]);
+		}
+		currRightStep++;
+		if(currRightStep == maxSteps){
+			isRotatingRight = 0;
+			currRightStep = 0;
+		}
+	}
+
+	if(isRotatingUp){
+		for(int i = 0; i<9; i++){
+			cubies[up[i]] = matMult(rotate_y(-90/maxSteps), cubies[up[i]]);
+		}
+		currUpStep++;
+		if(currUpStep == maxSteps){
+			isRotatingUp = 0;
+			currUpStep = 0;
+		}
+	}
+
+	if(isRotatingLeft){
+		for(int i = 0; i<9; i++){
+			cubies[left[i]] = matMult(rotate_x(90/maxSteps), cubies[left[i]]);
+		}
+		currLeftStep++;
+		if(currLeftStep == maxSteps){
+			isRotatingLeft = 0;
+			currLeftStep = 0;
+		}
+	}
+
+	if(isRotatingBack){
+		for(int i = 0; i<9; i++){
+			cubies[back[i]] = matMult(rotate_z(90/maxSteps), cubies[back[i]]);
+		}
+		currBackStep++;
+		if(currBackStep == maxSteps){
+			isRotatingBack = 0;
+			currBackStep = 0;
+		}
+	}
+
+	if(isRotatingDown){
+		for(int i = 0; i<9; i++){
+			cubies[down[i]] = matMult(rotate_y(90/maxSteps), cubies[down[i]]);
+		}
+		currDownStep++;
+		if(currDownStep == maxSteps){
+			isRotatingDown = 0;
+			currDownStep = 0;
+		}
+	}
+
+	if(isShuffling){
+		int success = 0;
+		switch(randomSequence[currIndex]){
+			case 'f':
+				success = rotateFront();
+				if(success){
+					r_string_front();
+					currIndex++;
+				}
+				break;
+			case 'r':
+				success = rotateRight();			
+				if(success){
+					r_string_right();
+					currIndex++;
+				}
+				break;
+			case 'b':
+				success = rotateBack();				
+				if(success){
+					r_string_back();
+					currIndex++;
+				}
+				break;
+			case 'l':
+				success = rotateLeft();
+				if(success){
+					r_string_left();
+					currIndex++;
+				}
+				break;
+			case 'u':
+				success = rotateUp();
+				if(success){
+					r_string_up();
+					currIndex++;
+				}
+				break;
+			case 'd':
+				success = rotateDown();
+				if(success){
+					r_string_down();
+					currIndex++;
+				}
+				break;
+		}
+		if(currIndex == 30){
+			isShuffling = 0;
+		}
+
+	}
+	glutPostRedisplay();
+}
+
 
 int main(int argc, char **argv)
 {
+	srand(time(NULL)); //sets the seed for random based on the time to ensure randomly generated cubes
     windowSize = 512;
     int num_vertices = 144;
     fillEdges(vertices, num_vertices, 1);
-    // fillColors(colors, num_vertices);
-    ctm = translate(0, 0, 0);
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
@@ -543,7 +777,7 @@ int main(int argc, char **argv)
     glutCreateWindow("SPHERE");
     //glewInit();
     init();
-    //glutIdleFunc(idle);
+    glutIdleFunc(idle);
     glutDisplayFunc(display);
     glutKeyboardFunc(keyboard);
     glutMouseFunc(mouse);

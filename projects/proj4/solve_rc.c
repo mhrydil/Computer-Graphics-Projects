@@ -856,7 +856,7 @@ struct simple_alist *id(struct simple_alist *state)
 	    {
 		simple_alist_set(result, 2,
 				 simple_alist_get(result, 2) ^
-				 simple_alist_get(state, i) > simple_alist_get(state, j));
+				 (simple_alist_get(state, i) > simple_alist_get(state, j)));
 	    }
 	}
 
