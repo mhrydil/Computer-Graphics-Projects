@@ -62,11 +62,16 @@ int isRotatingUp = 0;
 int currUpStep = 0;
 int isRotatingDown = 0;
 int currDownStep = 0;
-int maxSteps = 10;
+int maxSteps = 9;
 
 int isShuffling = 0;
+int isSolving = 0;
+int solveNum = 0;
 int currIndex = 0;
 char randomSequence[30];
+char solution[200]; // the solve function allocates 200 bytes for the solution, so this should be big enough?
+	// I mean, there is the possibility that the solution is like "U3F3D3..." and it's more than 200 characters long
+	// but actually I don't know if that's true.. I think the solving algorithm is much better than that..
 
 
 void fillEdges(vec4* vert, int numVertices, float t){
@@ -535,13 +540,65 @@ void shuffle(){
 	isShuffling = 1;
 }
 
+int isValid(char c){
+	if(c == '1' || c == '2' || c == '3') return 1;
+	if(c == 'F' || c == 'R' || c == 'B') return 1;
+	if(c == 'L' || c == 'U' || c == 'D') return 1;
+	return 0;
+}
+
 void solve(){
-	char* solution = solve_rc();
-	int currIndex = 0;
-	while(solution[currIndex] != '\0'){
-		printf("%c", solution[currIndex++]);
+	char* tempSolution = solve_rc();
+	int tempIndex = 0;
+	int solIndex = 0;
+	while(isValid(tempSolution[tempIndex])){
+		switch(tempSolution[tempIndex++]){
+			case '1':
+				break;
+			case '2':
+				solution[solIndex] = solution[solIndex-1];
+				solIndex++;
+				break;
+			case '3':
+				for(int i=0; i<2; i++){
+					solution[solIndex] = solution[solIndex-1];
+					solIndex++;
+				}
+				break;
+			case 'F':
+				solution[solIndex++] = 'f';
+				break;
+			case 'R':
+				solution[solIndex++] = 'r';
+				break;
+			case 'B':
+				solution[solIndex++] = 'b';
+				break;
+			case 'L':
+				solution[solIndex++] = 'l';
+				break;
+			case 'U':
+				solution[solIndex++] = 'u';
+				break;
+			case 'D':
+				solution[solIndex++] = 'd';
+				break;
+		}
+	}
+	solveNum = solIndex;
+	solution[solIndex] = '\n';
+
+	int i=0;
+	while(isValid(tempSolution[i])){
+		printf("%c", tempSolution[i++]);
 	}
 	printf("\n");
+	i=0;
+	while(solution[i] != '\n'){
+		printf("%c", solution[i++]);
+	}
+	printf("\n");
+	isSolving = 1;
 }
 
 void keyboard(unsigned char key, int mousex, int mousey)
@@ -758,7 +815,58 @@ void idle(void){
 			isShuffling = 0;
 			currIndex = 0;
 		}
+	}
 
+	if(isSolving){
+		int success = 0;
+		switch(solution[currIndex]){
+			case 'f':
+				success = rotateFront();
+				if(success){
+					r_string_front();
+					currIndex++;
+				}
+				break;
+			case 'r':
+				success = rotateRight();			
+				if(success){
+					r_string_right();
+					currIndex++;
+				}
+				break;
+			case 'b':
+				success = rotateBack();				
+				if(success){
+					r_string_back();
+					currIndex++;
+				}
+				break;
+			case 'l':
+				success = rotateLeft();
+				if(success){
+					r_string_left();
+					currIndex++;
+				}
+				break;
+			case 'u':
+				success = rotateUp();
+				if(success){
+					r_string_up();
+					currIndex++;
+				}
+				break;
+			case 'd':
+				success = rotateDown();
+				if(success){
+					r_string_down();
+					currIndex++;
+				}
+				break;
+		}
+		if(currIndex == solveNum){
+			isSolving = 0;
+			currIndex = 0;
+		}
 	}
 	glutPostRedisplay();
 }

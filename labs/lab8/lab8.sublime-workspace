@@ -43,23 +43,6 @@
 	},
 	"buffers":
 	[
-		{
-			"file": "lab8.c",
-			"settings":
-			{
-				"buffer_size": 7372,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "vshader_ctm.glsl",
-			"settings":
-			{
-				"buffer_size": 420,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		}
 	],
 	"build_system": "",
 	"build_system_choices":
@@ -239,6 +222,8 @@
 	],
 	"file_history":
 	[
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/labs/lab8/vshader_ctm.glsl",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/labs/lab8/lab8.c",
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/labs/lab8/Makefile",
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/Neuro/Notes/nov22.md",
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/labs/lab7/spring.c",
@@ -364,13 +349,11 @@
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0401_Java_TA/labs/lab7/Lab7.java",
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0401_Java_TA/labs/lab7/MovieDB.java",
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0401_Java_TA/labs/lab7/Movie.java",
-		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0445_DataStructures_TA/labs/lab5/cs445-lab05/cs445/lab5/Recursion.java",
-		"/Users/matthewhrydil/Box/cs445-lab05-!staff/!solution/cs445/lab5/Recursion.java",
-		"/Users/matthewhrydil/temporary/Test/test.java"
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0445_DataStructures_TA/labs/lab5/cs445-lab05/cs445/lab5/Recursion.java"
 	],
 	"find":
 	{
-		"height": 39.0
+		"height": 26.0
 	},
 	"find_in_files":
 	{
@@ -384,6 +367,7 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"locat"
 		],
 		"highlight": false,
 		"in_selection": false,
@@ -401,74 +385,13 @@
 	"groups":
 	[
 		{
-			"selected": 0,
 			"sheets":
 			[
-				{
-					"buffer": 0,
-					"file": "lab8.c",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 7372,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"incomplete_sync": null,
-							"remote_loading": false,
-							"synced": false,
-							"syntax": "Packages/C++/C.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 146.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "vshader_ctm.glsl",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 420,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								196,
-								196
-							]
-						],
-						"settings":
-						{
-							"incomplete_sync": null,
-							"remote_loading": false,
-							"synced": false,
-							"syntax": "Packages/OpenGL Shading Language (GLSL)/GLSL.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				}
+			]
+		},
+		{
+			"sheets":
+			[
 			]
 		}
 	],
@@ -489,11 +412,18 @@
 				0,
 				1,
 				1
+			],
+			[
+				1,
+				0,
+				2,
+				1
 			]
 		],
 		"cols":
 		[
 			0.0,
+			0.621388310971,
 			1.0
 		],
 		"rows":
