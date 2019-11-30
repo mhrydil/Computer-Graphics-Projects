@@ -531,6 +531,9 @@ void generateSequence(){
 }
 
 void shuffle(){
+	if(isSolving){ // don't allow shuffle if it's currently solving
+		return;
+	}
 	
 	generateSequence();
 	for(int i=0; i<30; i++){
@@ -548,6 +551,9 @@ int isValid(char c){
 }
 
 void solve(){
+	if(isShuffling){ // don't allow solve if it's currently shuffling
+		return;
+	}
 	char* tempSolution = solve_rc();
 	int tempIndex = 0;
 	int solIndex = 0;
