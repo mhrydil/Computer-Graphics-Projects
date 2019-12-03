@@ -49,8 +49,9 @@ GLuint aq_location;
 GLuint shininess_location;
 GLuint isShadow_location;
 vec4 eye, at, up;
+vec4 initialEye = {0, 0, 10, 1};
 vec4 AmbientProduct, DiffuseProduct, SpecularProduct;
-int currDegree = -30; // used to stop the rotation about the x-axis from happening when it is at either bound
+// int currDegree = -30; // used to stop the rotation about the x-axis from happening when it is at either bound
 int isAnimating = 0;
 mat4 ctm = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}};
 mat4 projection = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}};
@@ -65,17 +66,20 @@ mat4 orange_ctm = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0
 mat4 light_ctm = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}};
 mat4 table_ctm = {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 0.0, 1.0}};
 int windowSize;
+GLfloat radius = 10;
+GLfloat xRotation = 0;
+GLfloat yRotation = 0;
 
 // Lighting
 
 vec4 light_diffuse = {1.0, 1.0, 1.0, 1.0};
 vec4 light_specular = {1.0, 1.0, 1.0, 1.0};
-vec4 light_ambient = {0.5, 0.5, 0.5, 1.0};
+vec4 light_ambient = {0.2, 0.2, 0.2, 1.0};
 vec4 LightPosition = {0.0, 3.0, 0.0, 1.0};
 
-GLfloat att_const = .025;
-GLfloat att_linear = 0;
-GLfloat att_quad = 0;
+GLfloat att_const = 1;
+GLfloat att_linear = .05;
+GLfloat att_quad = .002;
 
 
 typedef enum material_name
@@ -99,13 +103,13 @@ typedef struct
 } material;
 
 material materials[NUM_MATERIALS] = {
-    {{1.0, 0.0, 0.0, 1.0}, {1.0, 0.0, 0.0, 1.0}, {1.0, 1.0, 1.0, 1.0}, 1000},
-    {{0.0, 1.0, 0.0, 1.0}, {0.0, 1.0, 0.0, 1.0}, {1.0, 1.0, 1.0, 1.0}, 1000},
-    {{0.0, 0.0, 1.0, 1.0}, {0.0, 0.0, 1.0, 1.0}, {1.0, 1.0, 1.0, 1.0}, 1000},
-    {{1.0, 1.0, 0.0, 1.0}, {1.0, 1.0, 0.0, 1.0}, {1.0, 1.0, 1.0, 1.0}, 1000},
-    {{1.0, 0.5, 0.0, 1.0}, {1.0, 0.5, 0.0, 1.0}, {1.0, 1.0, 1.0, 1.0}, 1000}, 
-    {{1.0, 1.0, 1.0, 1.0}, {1.0, 1.0, 1.0, 1.0}, {1.0, 1.0, 1.0, 1.0}, 1000},
-    {{0.0, 0.15, 0.0, 1.0}, {0.0, 0.15, 0.0, 1.0}, {1.0, 1.0, 1.0, 1.0}, 1000}
+    {{1.0, 0.0, 0.0, 1.0}, {1.0, 0.0, 0.0, 1.0}, {1.0, 1.0, 1.0, 1.0}, 10}, // red ball
+    {{0.0, 1.0, 0.0, 1.0}, {0.0, 1.0, 0.0, 1.0}, {1.0, 1.0, 1.0, 1.0}, 10}, //green ball
+    {{0.0, 0.0, 1.0, 1.0}, {0.0, 0.0, 1.0, 1.0}, {1.0, 1.0, 1.0, 1.0}, 10}, //blue ball
+    {{1.0, 1.0, 0.0, 1.0}, {1.0, 1.0, 0.0, 1.0}, {1.0, 1.0, 1.0, 1.0}, 10}, // yellow ball
+    {{1.0, 0.5, 0.0, 1.0}, {1.0, 0.5, 0.0, 1.0}, {1.0, 1.0, 1.0, 1.0}, 10}, // orange ball
+    {{1.0, 1.0, 1.0, 1.0}, {1.0, 1.0, 1.0, 1.0}, {1.0, 1.0, 1.0, 1.0}, 1}, // light
+    {{0.0, 0.15, 0.0, 1.0}, {0.0, 0.15, 0.0, 1.0}, {1.0, 1.0, 1.0, 1.0}, 1} // table
 };
 
 
@@ -181,7 +185,10 @@ void fillEdges(vec4* vert, int numVertices, float t){
 
 // fills the normals array with the normal vector for each vertex
 void fillNormals(vec4* normals, int size){
-    for(int i=0; i<size/3; i++){
+    for(int i=0; i<3888; i++){
+        normals[i] = vecSub(vertices[i], (vec4){0, 0, 0, 1});
+    }
+    for(int i=3888/3; i<size/3; i++){
         vec4 first = vertices[i*3];
         vec4 second = vertices[i*3+1];
         vec4 third = vertices[i*3+2];
@@ -208,6 +215,10 @@ void fillNormals(vec4* normals, int size){
 //     }
 // }
 
+void calculateEye(){
+    eye = matVec(rotate_x(xRotation), initialEye);
+    eye = matVec(rotate_y(yRotation), eye);    
+}
 
 void init(void)
 {
@@ -227,12 +238,12 @@ void init(void)
     orange_ctm = matMult(translate(4, .5, 0), orange_ctm);
     light_ctm = matMult(scale(.3, .3, .3), light_ctm);
     light_ctm = matMult(translate(0, 3, 0), light_ctm);
-    eye = (vec4){0, 0, 12, 1};
-    eye = matVec(rotate_x(-30), eye);
+    calculateEye();
+    // eye = matVec(rotate_x(-30), eye);
     at = (vec4){0, 0, 0, 1};
     up = (vec4){0, 1, 0, 1};
     model_view = look_at(eye, at, up);
-    projection = frustum(-1, 1, -1, 1, -1, -25);
+    projection = frustum(-1, 1, -1, 1, -1, -40);
 
 
     GLuint program = initShader("vshader_ctm.glsl", "fshader.glsl");
@@ -270,7 +281,7 @@ void init(void)
 
     GLuint vNormal = glGetAttribLocation(program, "vNormal");
     glEnableVertexAttribArray(vNormal);
-    glVertexAttribPointer(vNormal, 4, GL_FLOAT, GL_FALSE, 0, (GLvoid *) sizeof(vertices));
+    glVertexAttribPointer(vNormal, 4, GL_FLOAT, GL_FALSE, 0, (GLvoid *) sizeof(normals));
 
     glEnable(GL_DEPTH_TEST);
     glClearColor(0.0, 0.0, 0.0, 1.0);
@@ -327,7 +338,6 @@ void display(void)
                 glDrawArrays(GL_TRIANGLES, 3888, 36);
                 break;
         }
-        
     }
     
 
@@ -457,6 +467,20 @@ void keyboard(unsigned char key, int mousex, int mousey)
             LightPosition.z -= 1;
             glutPostRedisplay();
             break;
+        case 'i':
+            if(initialEye.z != 1){
+                initialEye.z -= .1;
+                calculateEye();
+                model_view = look_at(eye, at, up);
+            }
+            glutPostRedisplay();
+            break;
+        case 'o':
+            initialEye.z += .1;
+            calculateEye();
+            model_view = look_at(eye, at, up);
+            glutPostRedisplay();
+            break;
     }
 
     printVec(LightPosition);
@@ -474,27 +498,25 @@ void motion(int x, int y){
 
 void special(int key, int x, int y){
 	switch(key){
-        // case 100:
-        //     eye = matVec(rotate_y(-5), eye);
-        //     model_view = look_at(eye, at, up);
-        //     break;
-		case 101:
-            if(currDegree != -85){
-                eye = matVec(rotate_x(-5), eye);
-                model_view = look_at(eye, at, up);
-                currDegree -= 5;
-            }
+        case 100: // left
+            yRotation -= 5;
+            calculateEye();
+            model_view = look_at(eye, at, up);
             break;
-        // case 102:
-        //     eye = matVec(rotate_y(5), eye);
-        //     model_view = look_at(eye, at, up);
-        //     break;
-		case 103:
-            if(currDegree != 0){
-                eye = matVec(rotate_x(5), eye);
-                model_view = look_at(eye, at, up);
-                currDegree += 5;
-            }
+		case 101: // up
+            xRotation -= 5;
+            calculateEye();
+            model_view = look_at(eye, at, up);
+            break;
+        case 102: // right 
+            yRotation += 5;
+            calculateEye();
+            model_view = look_at(eye, at, up);
+            break;
+		case 103: // down
+            xRotation += 5;
+            calculateEye();
+            model_view = look_at(eye, at, up);
             break;
 	}
 	glutPostRedisplay();	

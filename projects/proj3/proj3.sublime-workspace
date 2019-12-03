@@ -218,10 +218,12 @@
 	},
 	"expanded_folders":
 	[
-		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj3"
 	],
 	"file_history":
 	[
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj4/proj4.sublime-project",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj3/vshader_ctm.glsl",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj3/proj3.c",
 		"/Users/matthewhrydil/temporary/LinkedLists/LinkedLists.java",
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/labs/lab7/sphere.c",
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/labs/lab7/Makefile",
@@ -231,10 +233,8 @@
 		"/Users/matthewhrydil/temporary/LinkedLists/LinkedListsTests.java",
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/Neuro/Notes/nov15.md",
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/labs/lab7/spring2.c",
-		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj3/vshader_ctm.glsl",
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1555_DatabaseManagement/Project/PittSocial.java",
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj3/fshader.glsl",
-		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj3/proj3.c",
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj1/fshader.glsl",
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj1/vshader_ctm.glsl",
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj3/sphere.c",
@@ -348,12 +348,11 @@
 		"/Users/matthewhrydil/temporary/AllSubsetsSum/AllSubsetSum.java",
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/labs/lab3/triangle_ctm.c",
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/Notes/Oct3",
-		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0401_Java_TA/Assignments/Assignment2/GamePlayer.java",
-		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0401_Java_TA/Assignments/Assignment2/GPT-out.txt"
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/TA/CS0401_Java_TA/Assignments/Assignment2/GamePlayer.java"
 	],
 	"find":
 	{
-		"height": 39.0
+		"height": 26.0
 	},
 	"find_in_files":
 	{
@@ -367,6 +366,7 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"ctm",
 			"[21, 28",
 			"[1, 5]",
 			"[5, 0]",
@@ -396,6 +396,11 @@
 			"sheets":
 			[
 			]
+		},
+		{
+			"sheets":
+			[
+			]
 		}
 	],
 	"incremental_find":
@@ -415,11 +420,18 @@
 				0,
 				1,
 				1
+			],
+			[
+				1,
+				0,
+				2,
+				1
 			]
 		],
 		"cols":
 		[
 			0.0,
+			0.470440408458,
 			1.0
 		],
 		"rows":
@@ -479,14 +491,14 @@
 		],
 		"width": 0.0
 	},
-	"selected_group": 0,
+	"selected_group": 1,
 	"settings":
 	{
 	},
 	"show_minimap": false,
 	"show_open_files": true,
 	"show_tabs": true,
-	"side_bar_visible": false,
+	"side_bar_visible": true,
 	"side_bar_width": 208.0,
 	"status_bar_visible": true,
 	"template_settings":
