@@ -109,19 +109,22 @@ void fillColors(vec4* colors, int size){
 }
 
 void fillNormals(vec4* normals, int size){
-	for(int i=0; i<size/3; i++){
-		vec4 first = vertices[i*3];
-		vec4 second = vertices[i*3+1];
-		vec4 third = vertices[i*3+2];
+    for(int i=0; i<size; i++){
+        normals[i] = vecSub(vertices[i], (vec4){0, 0, 0, 0});
+    }
+	// for(int i=0; i<size/3; i++){
+	// 	vec4 first = vertices[i*3];
+	// 	vec4 second = vertices[i*3+1];
+	// 	vec4 third = vertices[i*3+2];
 
-		vec4 v1 = vecSub(second, first);
-		vec4 v2 = vecSub(third, second);
-		vec4 cross = vecCross(v1, v2);
-		vec4 norm = vecScalar(1/getMagnitude(cross), cross);
-		normals[i*3] = norm;
-		normals[i*3+1] = norm;
-		normals[i*3+2] = norm;
-	}
+	// 	vec4 v1 = vecSub(second, first);
+	// 	vec4 v2 = vecSub(third, second);
+	// 	vec4 cross = vecCross(v1, v2);
+	// 	vec4 norm = vecScalar(1/getMagnitude(cross), cross);
+	// 	normals[i*3] = norm;
+	// 	normals[i*3+1] = norm;
+	// 	normals[i*3+2] = norm;
+	// }
 }
 
 
