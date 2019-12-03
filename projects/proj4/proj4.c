@@ -34,6 +34,7 @@ int num_vertices = 144;
 int NUM_CUBIES = 27;
 vec4 vertices[144];
 vec4 colors[144];
+vec4 normals[144];
 
 GLuint ctm_location;
 GLuint cubie_ctm_location;
@@ -63,15 +64,16 @@ int currUpStep = 0;
 int isRotatingDown = 0;
 int currDownStep = 0;
 int maxSteps = 9;
-
 int isShuffling = 0;
 int isSolving = 0;
 int solveNum = 0;
 int currIndex = 0;
 char randomSequence[30];
-char solution[200]; // the solve function allocates 200 bytes for the solution, so this should be big enough?
+char solution[200]; 
+	// the solve function allocates 200 bytes for the solution, so this should be big enough?
 	// I mean, there is the possibility that the solution is like "U3F3D3..." and it's more than 200 characters long
 	// but actually I don't know if that's true.. I think the solving algorithm is much better than that..
+
 
 
 void fillEdges(vec4* vert, int numVertices, float t){
@@ -131,35 +133,51 @@ void fillEdges(vec4* vert, int numVertices, float t){
 
 
 //fills the triangles with random colors.
-void fillColors(vec4* colors, int size){
-    for (int i=0; i<size/24; i++)
-    {
-        float randx = ((double) rand() / (RAND_MAX));
-        float randy = ((double) rand() / (RAND_MAX));
-        float randz = ((double) rand() / (RAND_MAX));
-        vec4 curr = {randx, randy, randz, 1};
-        vec4 next = {randx, randy, randz, 1};
-        vec4 tip = {randx, randy, randz, 1};
+// void fillColors(vec4* colors, int size){
+//     for (int i=0; i<size/24; i++)
+//     {
+//         float randx = ((double) rand() / (RAND_MAX));
+//         float randy = ((double) rand() / (RAND_MAX));
+//         float randz = ((double) rand() / (RAND_MAX));
+//         vec4 curr = {randx, randy, randz, 1};
+//         vec4 next = {randx, randy, randz, 1};
+//         vec4 tip = {randx, randy, randz, 1};
 
-        colors[i*24+1] = curr;
-        colors[i*24] = next;
-        colors[i*24+2] = tip;
-        colors[i*24+3] = next;
-        colors[i*24+4] = curr;
-        colors[i*24+5] = tip;
-    }
+//         colors[i*24+1] = curr;
+//         colors[i*24] = next;
+//         colors[i*24+2] = tip;
+//         colors[i*24+3] = next;
+//         colors[i*24+4] = curr;
+//         colors[i*24+5] = tip;
+//     }
 
-    for(int i=0; i<size; i++){
-        if(i%24 >= 6){
-            colors[i] = (vec4){0.1, 0.1, 0.1, 1};
-        }
-    }
+//     for(int i=0; i<size; i++){
+//         if(i%24 >= 6){
+//             colors[i] = (vec4){0.1, 0.1, 0.1, 1};
+//         }
+//     }
+// }
+
+void fillNormals(vec4* normals, int size){
+	for(int j=0; j<num_vertices/3; j++){
+		vec4 first = vertices[j*3];
+		vec4 second = vertices[j*3+1];
+		vec4 third = vertices[j*3+2];
+
+		vec4 v1 = vecSub(second, first);
+		vec4 v2 = vecSub(third, first);
+		vec4 v1crossv2 = vecCross(v1, v2);
+		vec4 norm = vecNorm(v1crossv2);
+		norm.w = 1;
+		normals[j*3] = norm;
+		normals[j*3+1] = norm;
+		normals[j*3+2] = norm;
+	}
 }
 
 
 void init(void)
 {
-
 	for(int i=0; i<NUM_CUBIES; i++){
 		cubies[i] = identity;
 		cubies[i] = matMult(scale(.333, .333, .333), cubies[i]);
@@ -186,6 +204,8 @@ void init(void)
 		}
 
 	}
+	fillNormals(normals, num_vertices);
+
     GLuint program = initShader("vshader_ctm.glsl", "fshader.glsl");
     glUseProgram(program);
 
@@ -199,9 +219,10 @@ void init(void)
     GLuint buffer;
     glGenBuffers(1, &buffer);
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) + sizeof(colors), NULL, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) + sizeof(colors) + sizeof(normals), NULL, GL_STATIC_DRAW);
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-    glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices), sizeof(colors), colors);
+    glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices) + sizeof(colors), sizeof(normals), normals);
+    // glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices), sizeof(colors), colors);
 
     GLuint vPosition = glGetAttribLocation(program, "vPosition");
     glEnableVertexAttribArray(vPosition);
@@ -210,6 +231,10 @@ void init(void)
     GLuint vColor = glGetAttribLocation(program, "vColor");
     glEnableVertexAttribArray(vColor);
     glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0, (GLvoid *) sizeof(vertices));
+
+    GLuint vNormal = glGetAttribLocation(program, "vNormal");
+    glEnableVertexAttribArray(vNormal);
+    glVertexAttribPointer(vNormal, 4, GL_FLOAT, GL_FALSE, 0, (GLvoid *) sizeof(vertices) + sizeof(colors));
 
     glEnable(GL_DEPTH_TEST);
     glClearColor(1.0, 1.0, 1.0, 1.0);
@@ -237,6 +262,7 @@ void display(void)
 				colors[i] = (vec4){0, 0, 0, 1};
 			}
 		}
+
 		if(i>=18){ // back face
 			for(int i=0; i<6; i++){
 				colors[48+i] = (vec4){0, 0, 1, 1};
@@ -247,7 +273,7 @@ void display(void)
 				colors[48+i] = (vec4){0, 0, 0, 1};
 			}
 		}
-		// Y-Placement
+
 		if(i%9 == 0 || i%9 == 1 || i%9 == 2){ // top face
 			for(int i=0; i<6; i++){
 				colors[120+i] = (vec4){1, 1, 1, 1};
@@ -258,6 +284,7 @@ void display(void)
 				colors[120+i] = (vec4){0, 0, 0, 1};
 			}
 		}
+
 		if(i%9 == 6 || i%9 == 7 || i%9 == 8){ // bottom face
 			for(int i=0; i<6; i++){
 				colors[96+i] = (vec4){1, 1, 0, 1};
@@ -268,7 +295,7 @@ void display(void)
 				colors[96+i] = (vec4){0, 0, 0, 1};
 			}
 		}
-		// X-Placement
+
 		if(i%9 == 0 || i%9 == 3 || i%9 == 6){ // left face
 			for(int i=0; i<6; i++){
 				colors[72+i] = (vec4){1, .35, 0, 1};
@@ -279,6 +306,7 @@ void display(void)
 				colors[72+i] = (vec4){0, 0, 0, 1};
 			}
 		}
+		
 		if(i%9 == 2 || i%9 == 5 || i%9 == 8){ // right face
 			for(int i=0; i<6; i++){
 				colors[24+i] = (vec4){.6, 0, 0, 1};
@@ -289,6 +317,7 @@ void display(void)
 				colors[24+i] = (vec4){0, 0, 0, 1};
 			}
 		}
+		
 		glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices), sizeof(colors), colors);
     	glUniformMatrix4fv(cubie_ctm_location, 1, GL_FALSE, (GLfloat *) &cubies[i]);
     	glDrawArrays(GL_TRIANGLES, 0, num_vertices);
@@ -334,7 +363,7 @@ int rotateFront(){
 		up[8] = front[2];
 		left[2] = front[0];
 		left[5] = front[3];
-		left[8] = front[6];
+		left[8] = front[6]; 
 		down[0] = front[6];
 		down[1] = front[7];
 		down[2] = front[8];
