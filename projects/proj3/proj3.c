@@ -109,7 +109,7 @@ material materials[NUM_MATERIALS] = {
     {{1.0, 1.0, 0.0, 1.0}, {1.0, 1.0, 0.0, 1.0}, {1.0, 1.0, 1.0, 1.0}, 10}, // yellow ball
     {{1.0, 0.5, 0.0, 1.0}, {1.0, 0.5, 0.0, 1.0}, {1.0, 1.0, 1.0, 1.0}, 10}, // orange ball
     {{1.0, 1.0, 1.0, 1.0}, {1.0, 1.0, 1.0, 1.0}, {1.0, 1.0, 1.0, 1.0}, 1}, // light
-    {{0.0, 0.15, 0.0, 1.0}, {0.0, 0.15, 0.0, 1.0}, {1.0, 1.0, 1.0, 1.0}, 1} // table
+    {{0.0, 0.55, 0.0, 1.0}, {0.0, 0.55, 0.0, 1.0}, {0.0, 0.0, 0.0, 1.0}, 1} // table
 };
 
 
@@ -311,108 +311,52 @@ void display(void)
         switch(i){
             case RED_BALL:
                 glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &red_ctm);
+                glUniform1i(isShadow_location, 0);
+                glDrawArrays(GL_TRIANGLES, 0, 3888);
+                glUniform1i(isShadow_location, 1);
                 glDrawArrays(GL_TRIANGLES, 0, 3888);
                 break;
             case GREEN_BALL:
                 glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &green_ctm);
+                glUniform1i(isShadow_location, 0);
+                glDrawArrays(GL_TRIANGLES, 0, 3888);
+                glUniform1i(isShadow_location, 1);
                 glDrawArrays(GL_TRIANGLES, 0, 3888);
                 break;
             case BLUE_BALL:
                 glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &blue_ctm);
+                glUniform1i(isShadow_location, 0);
+                glDrawArrays(GL_TRIANGLES, 0, 3888);
+                glUniform1i(isShadow_location, 1);
                 glDrawArrays(GL_TRIANGLES, 0, 3888);
                 break;
             case YELLOW_BALL:
                 glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &yellow_ctm);
+                glUniform1i(isShadow_location, 0);
+                glDrawArrays(GL_TRIANGLES, 0, 3888);
+                glUniform1i(isShadow_location, 1);
                 glDrawArrays(GL_TRIANGLES, 0, 3888);
                 break;
             case ORANGE_BALL:
                 glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &orange_ctm);
+                glUniform1i(isShadow_location, 0);
+                glDrawArrays(GL_TRIANGLES, 0, 3888);
+                glUniform1i(isShadow_location, 1);
                 glDrawArrays(GL_TRIANGLES, 0, 3888);
                 break;
             case LIGHT:
                 glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &light_ctm);
+                glUniform1i(isShadow_location, 0);
                 glDrawArrays(GL_TRIANGLES, 0, 3888);
                 break;
             case TABLE:
                 glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &ctm);
+                glUniform1i(isShadow_location, 0);
                 glDrawArrays(GL_TRIANGLES, 3888, 36);
                 break;
         }
     }
     
-
-    // AmbientProduct = product(materials[GREEN_BALL].reflect_ambient, light_ambient);
-    // DiffuseProduct = product(materials[GREEN_BALL].reflect_diffuse, light_diffuse);
-    // SpecularProduct = product(materials[GREEN_BALL].reflect_specular, light_specular);
-    // glUniform4fv(ap_location, 1, (GLfloat *) &AmbientProduct);
-    // glUniform4fv(dp_location, 1, (GLfloat *) &DiffuseProduct);
-    // glUniform4fv(sp_location, 1, (GLfloat *) &SpecularProduct);
-    // glUniform1fv(shininess_location, 1, (GLfloat *) &materials[GREEN_BALL].shininess);
-    // glUniform4fv(EyePosition_location, 1, (GLfloat *) &eye);
-    // glUniform4fv(LightPosition_location, 1, (GLfloat *) &LightPosition);
-    // glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &green_ctm);
-    // glDrawArrays(GL_TRIANGLES, 0, 3888);
-
-    // AmbientProduct = product(materials[BLUE_BALL].reflect_ambient, light_ambient);
-    // DiffuseProduct = product(materials[BLUE_BALL].reflect_diffuse, light_diffuse);
-    // SpecularProduct = product(materials[BLUE_BALL].reflect_specular, light_specular);
-    // glUniform4fv(ap_location, 1, (GLfloat *) &AmbientProduct);
-    // glUniform4fv(dp_location, 1, (GLfloat *) &DiffuseProduct);
-    // glUniform4fv(sp_location, 1, (GLfloat *) &SpecularProduct);
-    // glUniform1fv(shininess_location, 1, (GLfloat *) &materials[BLUE_BALL].shininess);
-    // glUniform4fv(EyePosition_location, 1, (GLfloat *) &eye);
-    // glUniform4fv(LightPosition_location, 1, (GLfloat *) &LightPosition);
-    // glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &blue_ctm);
-    // glDrawArrays(GL_TRIANGLES, 0, 3888);
-
-    // AmbientProduct = product(materials[YELLOW_BALL].reflect_ambient, light_ambient);
-    // DiffuseProduct = product(materials[YELLOW_BALL].reflect_diffuse, light_diffuse);
-    // SpecularProduct = product(materials[YELLOW_BALL].reflect_specular, light_specular);
-    // glUniform4fv(ap_location, 1, (GLfloat *) &AmbientProduct);
-    // glUniform4fv(dp_location, 1, (GLfloat *) &DiffuseProduct);
-    // glUniform4fv(sp_location, 1, (GLfloat *) &SpecularProduct);
-    // glUniform1fv(shininess_location, 1, (GLfloat *) &materials[YELLOW_BALL].shininess);
-    // glUniform4fv(EyePosition_location, 1, (GLfloat *) &eye);
-    // glUniform4fv(LightPosition_location, 1, (GLfloat *) &LightPosition);
-    // glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &yellow_ctm);
-    // glDrawArrays(GL_TRIANGLES, 0, 3888);
-
-    // AmbientProduct = product(materials[ORANGE_BALL].reflect_ambient, light_ambient);
-    // DiffuseProduct = product(materials[ORANGE_BALL].reflect_diffuse, light_diffuse);
-    // SpecularProduct = product(materials[ORANGE_BALL].reflect_specular, light_specular);
-    // glUniform4fv(ap_location, 1, (GLfloat *) &AmbientProduct);
-    // glUniform4fv(dp_location, 1, (GLfloat *) &DiffuseProduct);
-    // glUniform4fv(sp_location, 1, (GLfloat *) &SpecularProduct);
-    // glUniform1fv(shininess_location, 1, (GLfloat *) &materials[ORANGE_BALL].shininess);
-    // glUniform4fv(EyePosition_location, 1, (GLfloat *) &eye);
-    // glUniform4fv(LightPosition_location, 1, (GLfloat *) &LightPosition);
-    // glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &orange_ctm);
-    // glDrawArrays(GL_TRIANGLES, 0, 3888);
-
-    // AmbientProduct = product(materials[LIGHT].reflect_ambient, light_ambient);
-    // DiffuseProduct = product(materials[LIGHT].reflect_diffuse, light_diffuse);
-    // SpecularProduct = product(materials[LIGHT].reflect_specular, light_specular);
-    // glUniform4fv(ap_location, 1, (GLfloat *) &AmbientProduct);
-    // glUniform4fv(dp_location, 1, (GLfloat *) &DiffuseProduct);
-    // glUniform4fv(sp_location, 1, (GLfloat *) &SpecularProduct);
-    // glUniform1fv(shininess_location, 1, (GLfloat *) &materials[LIGHT].shininess);
-    // glUniform4fv(EyePosition_location, 1, (GLfloat *) &eye);
-    // glUniform4fv(LightPosition_location, 1, (GLfloat *) &LightPosition);
-    // glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &light_ctm);
-    // glDrawArrays(GL_TRIANGLES, 0, 3888);
-
-
-    // AmbientProduct = product(materials[TABLE].reflect_ambient, light_ambient);
-    // DiffuseProduct = product(materials[TABLE].reflect_diffuse, light_diffuse);
-    // SpecularProduct = product(materials[TABLE].reflect_specular, light_specular);
-    // glUniform4fv(ap_location, 1, (GLfloat *) &AmbientProduct);
-    // glUniform4fv(dp_location, 1, (GLfloat *) &DiffuseProduct);
-    // glUniform4fv(sp_location, 1, (GLfloat *) &SpecularProduct);
-    // glUniform1fv(shininess_location, 1, (GLfloat *) &materials[TABLE].shininess);
-    // glUniform4fv(EyePosition_location, 1, (GLfloat *) &eye);
-    // glUniform4fv(LightPosition_location, 1, (GLfloat *) &LightPosition);
-    // glUniformMatrix4fv(ctm_location, 1, GL_FALSE, (GLfloat *) &ctm);
-    // glDrawArrays(GL_TRIANGLES, 3888, 36);
 
 
     glUniformMatrix4fv(projection_location, 1, GL_FALSE, (GLfloat *) &projection);
@@ -504,19 +448,23 @@ void special(int key, int x, int y){
             model_view = look_at(eye, at, up);
             break;
 		case 101: // up
-            xRotation -= 5;
-            calculateEye();
-            model_view = look_at(eye, at, up);
+            if(xRotation != -85){
+                xRotation -= 5;
+                calculateEye();
+                model_view = look_at(eye, at, up);
+            }
             break;
-        case 102: // right 
+        case 102: // right
             yRotation += 5;
             calculateEye();
             model_view = look_at(eye, at, up);
             break;
 		case 103: // down
-            xRotation += 5;
-            calculateEye();
-            model_view = look_at(eye, at, up);
+            if(xRotation < 0){
+                xRotation += 5;
+                calculateEye();
+                model_view = look_at(eye, at, up);
+            }
             break;
 	}
 	glutPostRedisplay();	
