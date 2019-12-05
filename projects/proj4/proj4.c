@@ -168,7 +168,7 @@ void fillNormals(vec4* normals, int size){
 		vec4 v2 = vecSub(third, first);
 		vec4 v1crossv2 = vecCross(v1, v2);
 		vec4 norm = vecNorm(v1crossv2);
-		norm.w = 1;
+		norm.w = 0;
 		normals[j*3] = norm;
 		normals[j*3+1] = norm;
 		normals[j*3+2] = norm;
