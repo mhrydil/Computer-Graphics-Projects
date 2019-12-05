@@ -7,21 +7,20 @@ varying vec4 color;
 
 uniform mat4 ctm;
 uniform mat4 cubie_ctm;
-vec4 lightPosition = vec4(0, 0, 5, 1);
-float shininess = 10;
-vec4 ambient = vec4(.2, .2, .2, 1);
+vec4 lightPosition = vec4(0, 0, 10, 1);
+float shininess = 1000;
+vec4 ambient = vec4(.3, .3, .3, 1);
 vec4 diffuse = vec4(1, 1, 1, 1);
 vec4 specular = vec4(1, 1, 1, 1);
 float attConst = 1;
-float attLinear = 0;
-float attQuad = 0;
+float attLinear = 0.02;
+float attQuad = 0.05;
 vec4 a, d, s;
 
 
 
 void main()
 {
-
 	vec4 n = normalize(ctm * cubie_ctm * vNormal);
 	vec4 lTemp = lightPosition - (ctm * cubie_ctm * vPosition);
 	vec4 L = normalize(lTemp);
@@ -33,7 +32,7 @@ void main()
 	vec4 s = pow(max(dot(n, H), 0.0), shininess) * specular;
 	float distance = length(lTemp);
 	float attenuation = 1/(attConst + (attLinear * distance) + (attQuad * distance * distance));
-	vec4 temp = vColor * (ambient + (attenuation * (d+s)));
+	vec4 temp = (vColor * (ambient + (attenuation * (d+s))));
 	color = temp;
 	gl_Position = ctm * cubie_ctm * vPosition;
 }
