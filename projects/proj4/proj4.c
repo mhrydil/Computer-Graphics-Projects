@@ -258,8 +258,8 @@ void display(void)
 			}
 		}
 		else{
-			for(int i=0; i<6; i++){
-				colors[i] = (vec4){0, 0, 0, 1};
+			for(int i=0; i<24; i++){
+				colors[i] = (vec4){0.1, 0.1, 0.1, 1};
 			}
 		}
 
@@ -269,8 +269,8 @@ void display(void)
 			}
 		}
 		else{
-			for(int i=0; i<6; i++){
-				colors[48+i] = (vec4){0, 0, 0, 1};
+			for(int i=0; i<24; i++){
+				colors[48+i] = (vec4){0.1, 0.1, 0.1, 1};
 			}
 		}
 
@@ -280,8 +280,8 @@ void display(void)
 			}
 		}
 		else{
-			for(int i=0; i<6; i++){
-				colors[120+i] = (vec4){0, 0, 0, 1};
+			for(int i=0; i<24; i++){
+				colors[120+i] = (vec4){0.1, 0.1, 0.1, 1};
 			}
 		}
 
@@ -291,8 +291,8 @@ void display(void)
 			}
 		}
 		else{
-			for(int i=0; i<6; i++){
-				colors[96+i] = (vec4){0, 0, 0, 1};
+			for(int i=0; i<24; i++){
+				colors[96+i] = (vec4){0.1, 0.1, 0.1, 1};
 			}
 		}
 
@@ -302,8 +302,8 @@ void display(void)
 			}
 		}
 		else{
-			for(int i=0; i<6; i++){
-				colors[72+i] = (vec4){0, 0, 0, 1};
+			for(int i=0; i<24; i++){
+				colors[72+i] = (vec4){0.1, 0.1, 0.1, 1};
 			}
 		}
 		
@@ -313,8 +313,8 @@ void display(void)
 			}
 		}
 		else{
-			for(int i=0; i<6; i++){
-				colors[24+i] = (vec4){0, 0, 0, 1};
+			for(int i=0; i<24; i++){
+				colors[24+i] = (vec4){0.1, 0.1, 0.1, 1};
 			}
 		}
 		

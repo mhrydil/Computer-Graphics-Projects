@@ -12,7 +12,7 @@
 - The program can be run using the command ./proj4
 - The program can be stopped by pressing the 'q' button when the program is running.
 
-### It mostly works!
+### It works!
 
 - Functionally, this program works as it is supposed to.
 
