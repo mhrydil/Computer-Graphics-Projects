@@ -4,77 +4,91 @@
 
 ***
 
-## Project 2
+## Project 3
 
 ### Usage:
 
 - This project can be compiled by using the 'make' command in terminal.
-- The file can be run using the command ./proj2
+- The program can be run using the command ./proj3
+- The program can be stopped by pressing the 'q' button when the program is running.
 
 ### Works!
 
-- Everything in this project works as it is supposed to according to the project2 description
+- Everything in this project works as it is supposed to according to the project 3 description
 
 ### Running the program
 
-- after using the command ./proj2, the program will begin. Initially, the view is from above the entrance and looks at the center. When the 'a' key is pressed, the animation begins and the view circles around the top of the maze, flys down to the entrance, and then solves the maze
-- The user can also press the 'p' key at the start. This opens "play" mode where the camera will fly around the scene, move to the entrance, enter the maze and then stop. The user can then navigate through the maze using the arrow keys to try to solve the maze.
+- after using the command ./proj3, the program will begin. Initially, the eye point is (0, 0, 10). The at point throughout the program is (0, 0, 0).
+- The user can begin animation by pressing the 'a' key. Animation can be stopped using the 'x' key.
+- The user can move the camera throughout the scene using the arrow keys, and zooming in and out can be achieved using the 'i' and 'o' keys respectively.
+- The light can be moved around the scene using the 'u', 'd', 'f', 'b', 'l' and 'r' keys.
 
-### Code
+## Code
 
-- The code for this assignment is broken up between two files:
-	- proj2.c
+- The code for this assignment is broken up between three primary files:
 	- matLib.c (and matLib.h)
+	- proj3.c
+	- vshader_ctm.glsl
+
 
 ### matLib.c
 
-- matLib.c has been enhanced by adding several functions:
-	- `mat4 look_at(vec4 eye, vec4 at, vec4 up)`
-		- Creates a model view matrix based on the viewer position, the location they are looking at, and a vector pointed upwards (usually {0, 1, 0})
-	- `mat4 ortho(GLfloat left, GLfloat right, GLfloat bottom, GLfloat top, GLfloat near, GLfloat far)`
-		- Creates a projection matrix which is orthogonal to the viewer plane (ie. does not accurately reflect viewing in 3 dimensions)
-	- `mat4 frustum(GLfloat left, GLfloat right, GLfloat bottom, GLfloat top, GLfloat near, GLfloat far);`
-		- Creates a projection matrix which accurately represents viewing in 3 dimensions (the view volume becomes a frustum so that items look further away if they are further from the view plane)
+- matLib.c has been enhanced by adding the following function:
+	- `vec4 product(vec4 u, vec4 v);` - returns the product of each coordinate in u and v
+		- ie. result.x = u.x * v.x, etc...
+	- matLib.c contains all of the code for any of the matrix functions 
 
-### proj2.c
+### proj3.c
 
-- proj2.c holds all of the code for the generation of the maze, the physical representation of that maze as a 3d scene, textures, and the viewing/solving of that maze.
+- proj3.c contains all of the code to generate the objects(and their materials) in the scene, build the scene, and view/animate the scene.
 
-- **The Maze**
-	- The maze is represented as a two dimensional array of cells, each cell can have a north, south, east and west wall, and has a variable to determine if it's used or not
-		- isUsed is used during the solving of the maze
-	- The maze was generated using a recursive function that randomly chooses an x,y coordinate in the maze, and then builds sets of walls in a T formation from that point(north, south, east, and west).
-	- After those walls are generated, a single wall is removed from 3 of the sets of the walls.
-	- This technique generates 4 new, smaller "rooms" in which we recursively do the same process to build the inner walls for the maze.
-	- Recursion stops when either the height or width of any "room" is only one cell(adding more walls would block off the maze)
-	- Functions involved in generating the maze:
-		- `void printMaze(int size) //prints the maze`
-		- `void drawWestWalls(int r, int c, int rMin, int rMax) //Draws west walls(walls that move from north to south)`
-		- `void drawNorthWalls(int r, int c, int cMin, int cMax) // Draws north walls(walls that move from east to west)`
-		- `void generateMazeRec(int rMax, int rMin, int cMax, int cMin) //Recursive method to generate the walls for the maze`
-		- `void generateMaze(size) //Initial method to generate the maze`
-- **Solving the Maze**
-	- After the maze has been randomly generated, it is solved using a recursive backtracking algorithm
-	- It is a basic depth first recursive backtracking algorithm, it tries to go east until it can't go east anymore, then goes south, west, and north.
-	- When it can't move in any direction, it backtracks and tries to move forward from the previous cell.
-	- The solution to the maze is stored in an array called solution. The sequence of moves is stored as ints from 1-4 (1: east, 2:south, 3:west, 4:north)
-	- Functions involved in solving the maze:
-		- `int canGoEast(int row, int col)` (and canGoWest, North, South) //return true if the described cell is a viable option from the given position
-		- `void solveMaze(int row, int col)` // recursive function to generate the solution to the maze
-		- `void printSolution()`
-		- `void printMaze()` //textual representation of the maze
-- **Setting the Scene**
-	- The scene is generated by copying a bunch of cubes to their location in the scene.
-		- First, the pillars are placed at every location that a pillar belongs
-		- Next, based on the 2d maze array of cells, all of the walls are placed in their proper locations
-		- Finally, the ground is generated by creating a very large and flat cube
-	- Filling the Textures
-		- The fillTextures() function fills the array of textures to ensure that each cube has the correct texture
+- **Building the scene**
+	- A single sphere and a single cube are created. The vertices for each are stored in the vec4 array 'vertices[]'
+	- An array of vec4s is used to store the normal vector for each vertex in the scene.
+	- The materials for each of the objects are generated manually using an array of material structs.
+	- An enum of material names is used to associate each object with its material properties.
+	- **the init function** 
+		- fills the array of vertices as well as the array of normals.
+		- scales and translates a transformation matrix for each of the objects to put them in the place where they belong in the scene.
+		- Generates the initial eye point
+		- finds the location of all of the uniform variables from the vertex shader.
+		- loads the aray of vertices and normals into the buffer.
 
-### Animation
+- **Displaying**
+	- Anytime the display function is called, several things are done:
+		1. The attenuation constants are sent to the vertex shader
+		2. For each of the objects, the ambient, diffuse, and specular products, and shininess are sent to the vertex shader, the current light position is sent to the vertex shader, and the transformation matrix for that object is sent to the vertex shader.
+		3. The projection and model view matrices are sent to the vertex shader.
 
-- Animation is achieved for this project using the idle function
-- Inside the idle function are several if statements. The animation is achieved by determining the 'currentState' of the program, and reacting accordingly. For example, if the currentState of the program is "FLYING_AROUND", the program will begin to change the eye point by slowly rotating around the y-axis. After this finishes, it changes the currentState to FLYING_DOWN, etc and resets the currentStep and maxSteps variables to 0 and 25 respectively. These variables are used to calculate the alpha, and as currentStep is incremented, the animation changes to the next step in the animation and continues on this state until it reaches maxSteps.
-- Moving forward is achieved by changing the eye and at points in the same direction that the camera is currently facing.
-- Turning left and right is achieved by changing the at points so that it faces the direction 90 degrees from the current at point.
-- Dynamically solving the maze is achieved by looking through the indices of the solution array and determining the next direction that the camera needs to move. If the direction that the camera is facing is the direction it needs to move in, it will change the currentState to "WALK_FORWARD", otherwise, it will rotate in the direction that it needs to move before moving forward. When the state is changed to turn left or right, the current index of the solution array remains the same so that when it faces the correct direction, it will then move forward.
+- **Movement in scene**
+	- The user can move the camera in the scene by using the arrow key. This is achieved simply by adjusting xRotation and yRotation values which are used to calculate the eye position.
+	- Zooming in and out is achieved by changing the radius of the eye point from the origin.
+	- The light position can be adjusted by using [u]p, [d]own, [f]ront, [b]ack, [l]eft, [r]ight. This will move the light in the specified direction by one unit.
+		- The light_ctm is adjusted accordingly, as well as a vector which keeps track of the current light position. This is needed in the vertex shader to ensure accurate lighting/shadows.
+
+- **Animation**
+	- Animation is achieved by keeping a flag for whether or not the scene is animating or not. Animation can be turned on using the 'a' key and off using the 'x' key. After the 'a' key is pressed, the isAnimating flag is set to 1. The idle function then rotates the ctm for the green, blue, yellow and orange balls by different amounts about the y axis, which causes the balls to "roll" around the red ball at the center.
+
+### vshader_ctm.glsl
+
+- All of the lighting effects are done in the vertex shader.
+- The following are sent in to the vertex shader as uniform variables:
+	- mat4s
+		- ctm
+		- model_view
+		- projection
+	- vec4s
+		- AmbientProduct, DiffuseProduct, SpecularProduct
+		- LightPosition
+	- floats
+		- shininess
+		- attenuation values
+	- int (used as boolean)
+		- isShadow
+
+- **Lighting**
+	- The final color for each vertex is calculated based on the ambient, diffuse, and specular products, as well as the attenuation. The Phong lighting model is used to calculate what the color should be for each vertex. The lighting product values that are passed in are the product of the light and the material for each lighting type (ambient, specular, diffuse).
+	- The lightPosition is important to determine the distance from the objects, as well as the angle from the viewer, to the object, and the light.
+- **Shadows**
+	- Shadows are calculated when the isShadows flag is 1.
+	- Shadows are calculated by finding the proportion between the light source and the position of a vertex, and the light source and the surface of the table. The proportion of x and y is the same between the light and object as the light and the surface of the table. We calculate the x and z coordinates where a shadow belongs based on the light position and the position of a vertex. We set the y value to 0.001 so it looks like it is on the table, and we set the color to black.

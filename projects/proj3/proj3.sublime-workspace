@@ -43,6 +43,23 @@
 	},
 	"buffers":
 	[
+		{
+			"file": "proj3.c",
+			"settings":
+			{
+				"buffer_size": 17138,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "vshader_ctm.glsl",
+			"settings":
+			{
+				"buffer_size": 1678,
+				"line_ending": "Unix"
+			}
+		}
 	],
 	"build_system": "",
 	"build_system_choices":
@@ -218,11 +235,12 @@
 	},
 	"expanded_folders":
 	[
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj3"
 	],
 	"file_history":
 	[
-		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj4/proj4.sublime-project",
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj3/vshader_ctm.glsl",
+		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj4/proj4.sublime-project",
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/projects/proj3/proj3.c",
 		"/Users/matthewhrydil/temporary/LinkedLists/LinkedLists.java",
 		"/Users/matthewhrydil/Pitt/CurrentClassesLocal/CS1566_ComputerGraphics/labs/lab7/sphere.c",
@@ -366,6 +384,19 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"lightposition",
+			"printvec",
+			"printf",
+			"isshadow",
+			"shininess",
+			"printf",
+			"theta",
+			"projection",
+			"calculateeye",
+			"eye",
+			"pi",
+			"normals",
+			"lightposition",
 			"ctm",
 			"[21, 28",
 			"[1, 5]",
@@ -393,13 +424,80 @@
 	"groups":
 	[
 		{
+			"selected": 0,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "proj3.c",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 17138,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								11145,
+								11145
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/C++/C.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 4523.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				}
 			]
 		},
 		{
+			"selected": 0,
 			"sheets":
 			[
+				{
+					"buffer": 1,
+					"file": "vshader_ctm.glsl",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1678,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/OpenGL Shading Language (GLSL)/GLSL.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
 			]
 		}
 	],
@@ -431,7 +529,7 @@
 		"cols":
 		[
 			0.0,
-			0.470440408458,
+			0.448231572691,
 			1.0
 		],
 		"rows":

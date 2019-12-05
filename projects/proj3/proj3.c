@@ -74,7 +74,7 @@ GLfloat yRotation = 0;
 
 vec4 light_diffuse = {1.0, 1.0, 1.0, 1.0};
 vec4 light_specular = {1.0, 1.0, 1.0, 1.0};
-vec4 light_ambient = {0.2, 0.2, 0.2, 1.0};
+vec4 light_ambient = {0.35, 0.35, 0.35, 1.0};
 vec4 LightPosition = {0.0, 3.0, 0.0, 1.0};
 
 GLfloat att_const = 1;
@@ -292,13 +292,11 @@ void display(void)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    
-    
+    glUniform1fv(ac_location, 1, (GLfloat *) &att_const);
+    glUniform1fv(al_location, 1, (GLfloat *) &att_linear);
+    glUniform1fv(aq_location, 1, (GLfloat *) &att_quad);    
 
     for(int i=0; i<NUM_MATERIALS; i++){
-        glUniform1fv(ac_location, 1, (GLfloat *) &att_const);
-        glUniform1fv(al_location, 1, (GLfloat *) &att_linear);
-        glUniform1fv(aq_location, 1, (GLfloat *) &att_quad);
         AmbientProduct = product(materials[i].reflect_ambient, light_ambient);
         DiffuseProduct = product(materials[i].reflect_diffuse, light_diffuse);
         SpecularProduct = product(materials[i].reflect_specular, light_specular);
