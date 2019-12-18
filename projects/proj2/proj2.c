@@ -77,12 +77,12 @@ int solution[64];
 int solved;
 int animationDone;
 int sCounter;
-int num_vertices = 5796;
+int num_vertices = 28260;
 // vec4 pillars[2916];
 // vec2 tex_pillars[2916];
-vec4 vertices[5796];
-vec4 colors[5796];
-vec2 tex_coords[5796];
+vec4 vertices[28260];
+vec4 colors[28260];
+vec2 tex_coords[28260];
 vec4 eye;
 vec4 at;
 vec4 up;
@@ -437,8 +437,16 @@ void makeScene(vec4* vert, int numVertices, float t){
     }
 
     for(int i = 5760; i<num_vertices; i++){
-        vertices[i] = matVec(scale(100, .2, 100), vertices[i%36]);
-        vertices[i] = matVec(translate(25, -2.5, -25), vertices[i]);
+        vertices[i] = matVec(scale(5, .2, 5), vertices[i%36]);
+        vertices[i] = matVec(translate(-42.5, -3, 42.5), vertices[i]);
+    }
+    currVert = 5760;
+    for(int c=0; c<25; c++){
+        for(int r=0; r<25; r++){
+            for(int i=0; i<36; i++){
+                vert[currVert++] = matVec(translate(5*c, 0, -5*r), vert[5760+i]);
+            }
+        }
     }
 }
 
@@ -466,7 +474,7 @@ void fillTextures(vec2* textures, int size){
         textures[i] = textures[2916 + i%6];
     }
 
-    // Applies grass texture to floor
+    // Applies grass texture to ground cubes
     textures[5760] = (vec2){0, 1};
     textures[5761] = (vec2){.5, 1};
     textures[5762] = (vec2){.5, 0.5};
@@ -502,7 +510,7 @@ void init(void)
     int height = 800;
     GLubyte myTexels[width][height][3];
 
-    FILE *fp = fopen("p2texture04.raw", "r");
+    FILE *fp = fopen("p2texture04_2.raw", "r");
     if(fp == NULL){
         printf("Uhoh!");
     }
@@ -846,7 +854,7 @@ int main(int argc, char **argv)
 {
     srand(time(NULL)); //sets the seed for random based on the time to ensure randomly generated mazes
     windowSize = 800;
-    int num_vertices = 5796;
+    int num_vertices = 28260;
     int mazeSize = 8;
     generateMaze(mazeSize);
     makeScene(vertices, num_vertices, 1);
