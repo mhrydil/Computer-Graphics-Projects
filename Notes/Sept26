@@ -1,5 +1,0 @@
-scale(alphax, alpha y, alphaz)
-translate(ax, ay, az)
-rotate_x(theta)
-rotate_y(theta)
-rotate_z(theta)
