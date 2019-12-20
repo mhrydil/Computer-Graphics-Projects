@@ -1,8 +1,11 @@
 /*
- * triangle.c
+ *  proj2.c
  *
- *  Created on: Aug 28, 2017
- *      Author: Thumrongsak Kosiyatrakul
+ *  Created: Fall 2019
+ *  Author: Matthew Hrydil
+ *  Class:  CS1566 - Introduction to Computer Graphics
+ *          University of Pittsburgh
+ *          Dr. Thumrongsak(Tan) Kosiyatrakul
  */
 
 #define GL_SILENCE_DEPRECATION
@@ -18,7 +21,7 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include <GL/freeglut_ext.h>
-``
+
 #endif  // __APPLE__
 
 #include "initShader.h"
@@ -26,7 +29,6 @@
 #include "../../common/matLib.h"
 #include <stdio.h>
 #include <time.h>
-//#include "lab3.h"
 
 #define BUFFER_OFFSET( offset )   ((GLvoid*) (offset))
 
@@ -78,8 +80,6 @@ int solved;
 int animationDone;
 int sCounter;
 int num_vertices = 28260;
-// vec4 pillars[2916];
-// vec2 tex_pillars[2916];
 vec4 vertices[28260];
 vec4 colors[28260];
 vec2 tex_coords[28260];
@@ -110,7 +110,8 @@ void printCell(int x, int y){
     printf("west: %d\n", maze[x][y].wWall);
 }
 
-int randomNum(int from, int to){ //returns a random number betweeen from and to inclusive
+//returns a random number betweeen from and to inclusive
+int randomNum(int from, int to){ 
     if(to == from) return -1;
     return rand() % (to-from);
 }
@@ -134,15 +135,12 @@ void generateMazeRec(int rMax, int rMin, int cMax, int cMin){
     int cDiff = cMax - cMin;
     if(rDiff <= 1 || cDiff <= 1) return; //base case the row or column is only one cell wide, so we can't put any walls in it
     else{
-        // printf("rMax: %d rMin: %d cMax: %d cMin: %d\n", rMax, rMin, cMax, cMin);
         int rRand = 1+randomNum(rMin+1, rMax); // returns random number from rMin+1 to rMax
         int cRand = 1+randomNum(cMin+1, cMax); // returns a random number from cMin+1 to cMax
-        int r = rMin + rRand; //this is the cell that we randomly selected to draw walls from
+        int r = rMin + rRand;                  //this is the cell that we randomly selected to draw walls from
         int c = cMin + cRand;
-        // printf("row: %d col: %d\n", r, c);
         drawNorthWalls(r, c, cMin, cMax);
         drawWestWalls(r, c, rMin, rMax);
-        // printMaze(8);
 
 
         int randomWall = randomNum(0, 3);
@@ -154,7 +152,6 @@ void generateMazeRec(int rMax, int rMin, int cMax, int cMin){
                 maze[rMin][c].wWall = 0;
             }
             else maze[(x+rMin)][c].wWall = 0;
-            //printf("removing west wall of cell [%d][%d]\n", x+rMin, c);
         }
         if(randomWall != 1){
             int x = randomNum(cMin, c-1);
@@ -162,7 +159,6 @@ void generateMazeRec(int rMax, int rMin, int cMax, int cMin){
                 maze[r][cMin].nWall = 0;
             }
             else maze[r][(x+cMin)].nWall = 0;
-            //printf("removing north wall of cell [%d][%d]\n", r, x+cMin);
         }
         if(randomWall != 2){
             int x = randomNum(0, rMax-r);
@@ -170,7 +166,6 @@ void generateMazeRec(int rMax, int rMin, int cMax, int cMin){
                 maze[r][c].wWall = 0;
             }
             else maze[(x+r)][c].wWall = 0;
-            // printf("removing west wall of cell [%d][%d]\n", x+r, c);
         }
         if(randomWall != 3){
             int x = randomNum(0, cMax-c);
@@ -178,10 +173,8 @@ void generateMazeRec(int rMax, int rMin, int cMax, int cMin){
                 maze[r][c].wWall = 0;
             }
             else maze[r][(x+c)].nWall = 0;
-            // printf("removing north wall of cell [%d][%d]\n", r, x+c);
         }
 
-        // printMaze(8);
         generateMazeRec(r, rMin, c, cMin);
         generateMazeRec(rMax, r, c, cMin); 
         generateMazeRec(r, rMin, cMax, c);
@@ -436,10 +429,13 @@ void makeScene(vec4* vert, int numVertices, float t){
         }
     }
 
+    // creates a single block of grass
     for(int i = 5760; i<num_vertices; i++){
         vertices[i] = matVec(scale(5, .2, 5), vertices[i%36]);
         vertices[i] = matVec(translate(-42.5, -3, 42.5), vertices[i]);
     }
+
+    // creates a 25x25 plot of grass
     currVert = 5760;
     for(int c=0; c<25; c++){
         for(int r=0; r<25; r++){
@@ -454,10 +450,10 @@ void makeScene(vec4* vert, int numVertices, float t){
 void fillTextures(vec2* textures, int size){
     // Applies stone texture to pillars
     textures[0] = (vec2){.5, .5};
-    textures[1] = (vec2){1, .5};
-    textures[2] = (vec2){1, 0.0};
+    textures[1] = (vec2){.7, .5};
+    textures[2] = (vec2){.7, 0.0};
     textures[3] = (vec2){.5, 0.5};
-    textures[4] = (vec2){1, 0};
+    textures[4] = (vec2){.7, 0};
     textures[5] = (vec2){0.5, 0.0};
     for(int i=0; i<2916; i++){
     	textures[i] = textures[i%6];
@@ -891,7 +887,7 @@ int main(int argc, char **argv)
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
     glutInitWindowSize(windowSize, windowSize);
     glutInitWindowPosition(200,200);
-    glutCreateWindow("Cube");
+    glutCreateWindow("Maze");
     //glewInit();
     init();
     glutIdleFunc(idle);
