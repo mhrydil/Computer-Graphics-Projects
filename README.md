@@ -5,6 +5,7 @@
 
 ### Project 1
 - Generating 3d shapes and implementing arbitrary rotation using the mouse
+- Created a sphere and a torus(donut) with randomly generated colors for each triangle.
 
 ### Project 2
 - *3d Maze with ability to "play" and "solve" the maze*
