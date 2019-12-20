@@ -7,14 +7,14 @@ varying vec4 color;
 
 uniform mat4 ctm;
 uniform mat4 cubie_ctm;
-vec4 lightPosition = vec4(0, 0, 1, 1);
-float shininess = 1000;
+vec4 lightPosition = vec4(0, 0, 10, 1);
+float shininess = 4;
 vec4 ambient = vec4(.3, .3, .3, 1);
 vec4 diffuse = vec4(1, 1, 1, 1);
 vec4 specular = vec4(1, 1, 1, 1);
-float attConst = 1;
-float attLinear = .02;
-float attQuad = 0.05;
+float attConst = .5;
+float attLinear = .01;
+float attQuad = .01;
 vec4 a, d, s;
 
 
@@ -32,7 +32,7 @@ void main()
 	vec4 s = pow(max(dot(n, H), 0.0), shininess) * specular;
 	float distance = length(lTemp);
 	float attenuation = 2/(attConst + (attLinear * distance) + (attQuad * distance * distance));
-	vec4 temp = (vColor * (1 + (attenuation * (d+s))));
+	vec4 temp = (vColor * (ambient + (attenuation * (d+s))));
 	color = temp;
 	// color = vColor; // uncomment to remove any lighting effects
 	gl_Position = ctm * cubie_ctm * vPosition;

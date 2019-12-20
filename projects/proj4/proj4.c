@@ -131,33 +131,6 @@ void fillEdges(vec4* vert, int numVertices, float t){
     }
 }
 
-
-//fills the triangles with random colors.
-// void fillColors(vec4* colors, int size){
-//     for (int i=0; i<size/24; i++)
-//     {
-//         float randx = ((double) rand() / (RAND_MAX));
-//         float randy = ((double) rand() / (RAND_MAX));
-//         float randz = ((double) rand() / (RAND_MAX));
-//         vec4 curr = {randx, randy, randz, 1};
-//         vec4 next = {randx, randy, randz, 1};
-//         vec4 tip = {randx, randy, randz, 1};
-
-//         colors[i*24+1] = curr;
-//         colors[i*24] = next;
-//         colors[i*24+2] = tip;
-//         colors[i*24+3] = next;
-//         colors[i*24+4] = curr;
-//         colors[i*24+5] = tip;
-//     }
-
-//     for(int i=0; i<size; i++){
-//         if(i%24 >= 6){
-//             colors[i] = (vec4){0.1, 0.1, 0.1, 1};
-//         }
-//     }
-// }
-
 void fillNormals(vec4* normals, int size){
 	for(int j=0; j<num_vertices/3; j++){
 		vec4 first = vertices[j*3];
@@ -918,8 +891,7 @@ int main(int argc, char **argv)
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
     glutInitWindowSize(windowSize, windowSize);
     glutInitWindowPosition(200,200);
-    glutCreateWindow("SPHERE");
-    //glewInit();
+    glutCreateWindow("Rubik's Cube");
     init();
     glutIdleFunc(idle);
     glutDisplayFunc(display);
