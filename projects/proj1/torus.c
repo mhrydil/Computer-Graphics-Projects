@@ -23,7 +23,7 @@
 
 #include "initShader.h"
 #include <math.h>
-#include "matLib.h"
+#include "../../common/matLib.h"
 #include <stdio.h>
 #include <time.h>
 //#include "lab3.h"
