@@ -1,8 +1,9 @@
 /*
- * initShader.c
+ *  initShader.c
  *
- *  Created on: Aug 28, 2017
- *      Author: Thumrongsak Kosiyatrakul
+ *  Created: Fall 2019
+ *  Author: Matthew Hrydil
+ *  Class:  Introduction to Computer Graphics
  */
 
 #include "initShader.h"

@@ -1,8 +1,10 @@
 /*
- * triangle.c
+ *  proj4.c
  *
- *  Created on: Aug 28, 2017
- *      Author: Thumrongsak Kosiyatrakul
+ * 	Project 4 - Rubik's Cube
+ *  Created: Fall 2019
+ *  Author: Matthew Hrydil
+ *  Class:  Introduction to Computer Graphics
  */
 
 #define GL_SILENCE_DEPRECATION

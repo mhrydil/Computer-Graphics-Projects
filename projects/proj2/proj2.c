@@ -3,9 +3,7 @@
  *
  *  Created: Fall 2019
  *  Author: Matthew Hrydil
- *  Class:  CS1566 - Introduction to Computer Graphics
- *          University of Pittsburgh
- *          Dr. Thumrongsak(Tan) Kosiyatrakul
+ *  Class:  Introduction to Computer Graphics
  */
 
 #define GL_SILENCE_DEPRECATION
