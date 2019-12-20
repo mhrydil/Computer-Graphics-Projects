@@ -2,6 +2,13 @@
 /LectureSlides/
 /OpenGL_Setup/
 /Notes/
+/labs/
+
+# Don't track .sublime files
+*.sublime-project
+*.sublime-workspace
+.sublime-project
+.sublime-workspace
 
 # This file...
 *.DS_Store
