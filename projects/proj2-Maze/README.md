@@ -1,4 +1,3 @@
-# CS1566
 ## Matthew Hrydil
 ## Fall 2019
 
