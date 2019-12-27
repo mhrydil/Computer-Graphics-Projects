@@ -1,6 +1,6 @@
 Matthew Hrydil
 mbh38
-CS1566 - Project 1
+Project 1
 
 * I use a mac
 
