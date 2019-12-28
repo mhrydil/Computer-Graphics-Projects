@@ -6,6 +6,7 @@
 
 ## Project 4 - Rubik's Cube
 
+Video of program in action:
 https://www.youtube.com/watch?v=aDoT50q4wDI
 
 ### Usage:
