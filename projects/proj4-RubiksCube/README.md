@@ -6,6 +6,8 @@
 
 ## Project 4 - Rubik's Cube
 
+https://www.youtube.com/watch?v=aDoT50q4wDI
+
 ### Usage:
 
 - This project can be compiled by using the 'make' command in terminal.
